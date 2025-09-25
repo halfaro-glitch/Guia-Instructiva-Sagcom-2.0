@@ -226,7 +226,6 @@
     white-space: pre-line;
     padding-left: 1rem;
   }
-
 </style>
 </head>
 <body>
@@ -445,22 +444,21 @@
       perfilActual = null;
       limpiarSeleccion();
       perfilSeleccionadoDiv.textContent = "Seleccione un perfil";
-      subtituloListUl.innerHTML = "";
-      accionDisplay.textContent = "";
+      document.getElementById("subtituloList").querySelector("ul").innerHTML = "";
+      document.getElementById("accionDisplay").textContent = "";
       searchInput.value = "";
       document.querySelectorAll(".perfil-btn").forEach(b => b.classList.remove("active"));
       cargarSubtitulos(Object.values(perfilMap).flat());
     };
 
     searchInput.addEventListener("input", () => {
-      cargarSubtitulos(Object.values(perfilMap).flat());
+      cargarSubtitulos(Object.values(perfilMap).flat()); // filtro global sin perfil
     });
 
     btnWebSearch.onclick = () => {
       window.open("https://www.spensiones.cl/portal/compendio/596/w3-propertyvalue-3208.html", "_blank");
     };
 
-    // Inicializar sin perfil seleccionado, mostrar todo
     cargarSubtitulos(Object.values(perfilMap).flat());
   });
 </script>
