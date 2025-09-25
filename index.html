@@ -131,10 +131,9 @@
     transform: scale(1.15);
   }
 
-  /* Selector perfil derecho superior un poco abajo */
   #perfilSeleccionado {
     position: absolute;
-    top: 130px;
+    top: 140px; /* bajado para no tapar autor */
     right: 12px;
     background: linear-gradient(145deg, #fdf6ff, #bb9edc);
     border-radius: 16px;
@@ -281,6 +280,8 @@
     margin-top: 16px;
     border-top: 2px solid #6a0dadaa;
     padding-top: 10px;
+    max-height: 200px;
+    overflow-y: auto;
   }
   #noticiaRegion h4 {
     margin: 0 0 10px 0;
@@ -307,7 +308,7 @@
     text-decoration: underline;
   }
 
-  /* Animaciones iconos de clima */
+  /* Animaciones iconos clima */
   .icono-sun {
     animation: rotar 30s linear infinite;
   }
@@ -424,6 +425,7 @@
   <div class="accion-container" aria-label="Acción a realizar para subtitulo">
     <h3>Acción a realizar</h3>
     <div class="accion-text" id="accionDisplay" tabindex="0" aria-live="polite"></div>
+
     <div id="noticiaRegion" aria-live="polite" aria-atomic="true">
       <h4>Noticias recientes</h4>
       <img id="imgNoticia" alt="Imagen noticia" src="" />
@@ -455,7 +457,6 @@
       texto: "El gobierno implementa medidas para mejorar la calidad del aire en Santiago.",
       enlace: "https://www.gob.cl/noticias/mejoras-calidad-aire-santiago/"
     },
-    // Resto de regiones con ejemplo de noticia genérica
     "Arica": {
       titulo: "Nuevo proyecto turístico impulsa Arica",
       imagen: "https://upload.wikimedia.org/wikipedia/commons/thumb/d/df/Arica_y_Parinacota.svg/320px-Arica_y_Parinacota.svg.png",
@@ -468,7 +469,6 @@
       texto: "La región apuesta por energías limpias aumentando su capacidad solar y eólica.",
       enlace: "https://www.gob.cl/noticias/energia-renovable-antofagasta/"
     }
-    // Agrega más noticias por región según disponibilidad
   };
 
   function actualizarHora() {
@@ -505,24 +505,305 @@
     }
   }
 
+  function actualizarPanelClima(region) {
+    const climaIcon = document.getElementById("climaIcon");
+    if(!region){
+      climaIcon.className = "";
+      climaIcon.textContent = "";
+      document.getElementById("climaTemp").textContent = "-- °C";
+      document.getElementById("climaText").textContent = "Elija una región para ver el clima";
+      return;
+    }
+    const condicionesDemostrativas = [
+      {icon:"☀️", temp:23, texto:"Soleado", clase:"icono-sun"},
+      {icon:"⛅", temp:18, texto:"Parcialmente nublado", clase:"icono-cloud"},
+      {icon:"🌧️", temp:14, texto:"Lluvia ligera", clase:"icono-rain"},
+      {icon:"🌫️", temp:12, texto:"Niebla", clase:"icono-cloud"},
+      {icon:"☁️", temp:15, texto:"Nublado", clase:"icono-cloud"}
+    ];
+    const seleccion = condicionesDemostrativas[Math.floor(Math.random()*condicionesDemostrativas.length)];
+    climaIcon.className = seleccion.clase;
+    climaIcon.textContent = seleccion.icon;
+    document.getElementById("climaTemp").textContent = `${seleccion.temp} °C`;
+    document.getElementById("climaText").textContent = `${region}: ${seleccion.texto}`;
+  }
+
+
   document.addEventListener("DOMContentLoaded", () => {
     actualizarHora();
 
     const pasos = [
-      /* Mismo arreglo pasos que antes, se omite aquí por brevedad, incluirlo completo en la implementación */
+      {perfil: "ADMINISTRATIVO",subtitulo: "ANALISIS DE ADMISIBILIDAD",accion:"VER + / REGULAR / BUSCAR RUT / VER +"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "ADMISIBILIDAD DE LA SOLICITUD",accion:"ACEPTAR / CONFIRMAR"},
+      {perfil: "MÉDICO PRESIDENTE",subtitulo: "ASIGNAR MEDICO",accion:"REGULAR / BUSCAR RUT"},
+      {perfil: "MÉDICO PRESIDENTE",subtitulo: "ACCIONES / AUTOASIGNAR Y/O MODIFICAR",accion:""},
+      {perfil: "MÉDICO PRESIDENTE",subtitulo: "MARCAR MÉDICO / CONFIRMAR MÉDICO",accion:""},
+      {perfil: "ADMINISTRATIVO",subtitulo: "INICIO / CITACIONES",accion:"VER + / REGULAR / BUSCAR RUT"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "ACCIONES / REAGENDAR 1 O 2 SOLICITUDES",accion:"(DEPENDE EL CASO)"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "GESTIONAR CITACION / PREVISUALIZAR CARTA",accion:"CONFIRMAR CITA"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "… NOMINA DE CORREO",accion:"MARCAR SOLICITUDES / ASIGNAR NÓMINA / CREAR"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "NÓMINA / EN GESTION",accion:"SE PINCHA LA 1ERA / REVISAR NOMINA"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "DESCARGAR DOCUMENTO NÓMINA",accion:""},
+      {perfil: "ADMINISTRATIVO",subtitulo: "GUIA DE DESPACHO DE CORREOS",accion:"EDITAR No DE NÓMINA"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "DOCUMENTO GUIA DE DESPACHO",accion:"CAMBIAR FECHA (HOY) / ADJUNTAR NÓMINA / GUARDAR"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "INICIO",accion:"CONFIRMAR ASISTENCIA A EVALUACIONES"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "CONFIRMAR ASISTENCIA A EVALUACIONES",accion:"PRESENCIAL / TELEFONICA"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "BUSCAR C/ RUT / ACCIONES",accion:"SOBRECUPO / CAMBIAR HORA / CONFIRMAR / SI (X 2)"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "VER +",accion:"REGULAR / BUSCAR RUT / VER +"},
+      {perfil: "MÉDICO ASIGNADO",subtitulo: "MIS EXPEDIENTES",accion:"EVALUACIÓN MÉDICA"},
+      {perfil: "MÉDICO ASIGNADO",subtitulo: "PENDIENTE DE INICIO / EN EVALUACION",accion:"BUSCAR RUT / IR AL EXPEDIENTE"},
+      {perfil: "MÉDICO ASIGNADO",subtitulo: "DESEA REALIZAR EVALUACION MEDICA?",accion:"COMENZAR"},
+      {perfil: "MÉDICO ASIGNADO",subtitulo: "ANAMNESIS",accion:"COMPLETAR / GUARDAR"},
+      {perfil: "MÉDICO ASIGNADO",subtitulo: "EXAMEN FÍSICO",accion:"COMPLETAR / GUARDAR"},
+      {perfil: "MÉDICO ASIGNADO",subtitulo: "PLAN DE ACCIÓN",accion:"ACCIÓN A SEGUIR / PERITAJES Y/O EXAMENES"},
+      {perfil: "MÉDICO ASIGNADO",subtitulo: "NUEVA SOLICITUD",accion:""},
+      {perfil: "MÉDICO ASIGNADO",subtitulo: "SOLICITAR INTERCONSULTAS",accion:"ESPECIALIDADES (…..) SELECCIONAR"},
+      {perfil: "MÉDICO ASIGNADO",subtitulo: "SOLICITAR EXAMENES",accion:"EXAMENES DE LABORATORIO / FILTRAR / CONFIRMAR"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "ORDENES DE ATENCIÓN POR GESTIONAR",accion:"VER + / REGULAR / BUSCAR RUT"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "GESTIONAR ORDEN",accion:"SELECCIONAR COMISION / PROPUESTA DE SISTEMA N° 1"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "LABORATORIO VERIS",accion:""},
+      {perfil: "ADMINISTRATIVO",subtitulo: "INTERCONSULTA SOLICITADA",accion:"COMPLETAR / ACCIONES / MODALIDAD DE ATENCION"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "CAMBIAR FECHA / HORA",accion:""},
+      {perfil: "ADMINISTRATIVO",subtitulo: "SELECCIONAR INTERCONSULTOR (POR DEFECTO)",accion:""},
+      {perfil: "ADMINISTRATIVO",subtitulo: "AGENDAR / CONFIRMAR / EMITIR ORDENES",accion:""},
+      {perfil: "MÉDICO INTERCONSULTOR",subtitulo: "...ÓRDENES DE ATENCIÓN",accion:""},
+      {perfil: "MÉDICO INTERCONSULTOR",subtitulo: "ÓRDENES EMITIDAS",accion:"FILTRAR CON RUT / SELECCIONAR, CONFIRMAR"},
+      {perfil: "MÉDICO INTERCONSULTOR",subtitulo: "CONFIRMAR C/RUT/ INDICAR HORA / ACEPTAR",accion:""},
+      {perfil: "MÉDICO INTERCONSULTOR",subtitulo: "ORDENES CONFIRMADAS",accion:"SELECCIONAR / REALIZAR EVALUACIÓN"},
+      {perfil: "MÉDICO INTERCONSULTOR",subtitulo: "ADJUNTAR INFORME FINAL / ENVÍAR A REVISIÓN",accion:""},
+      {perfil: "LABORATORIO",subtitulo: "ÓRDENES EMITIDAS",accion:"FILTRAR CON RUT / SELECCIONAR, CONFIRMAR"},
+      {perfil: "LABORATORIO",subtitulo: "CONFIRMAR C/RUT/ INDICAR HORA / ACEPTAR",accion:""},
+      {perfil: "LABORATORIO",subtitulo: "ÓRDENES CONFIRMADAS",accion:"SELECCIONAR / REALIZAR EVALUACIÓN"},
+      {perfil: "LABORATORIO",subtitulo: "DOCUMENTOS DE PRESTACIONES",accion:"ADJUNTAR / ACEPTAR / ENVÍAR A REVISIÓN / ACEPTAR"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "ÓRDENES DE ATENCIÓN",accion:"ORDENES DE ATENCIÓN TRABAJADAS"},
+      {perfil: "ADMINISTRATIVO",subtitulo: "EN VERIFICACIÓN DE RECEPCIÓN",accion:"ACCIONES /VALIDAR PARA COBRO / ACEPTAR"},
+      {perfil: "MÉDICO INTERCONSULTOR",subtitulo: "ORDENES VALIDADAS PARA COBRO",accion:"FILTRAR C/ RUT / SELECCIONAR / COBRAR"},
+      {perfil: "MÉDICO ASESOR",subtitulo: "MI TRABAJO",accion:"EVALUACIÓN MEDICA"},
+      {perfil: "MÉDICO ASESOR",subtitulo: "PENDIENTE INICIO / EN EVALUACIÓN",accion:"FILTRAR C/RUT / IR AL EXPEDIENTE"},
+      {perfil: "MÉDICO ASESOR",subtitulo: "GESTIÓN DEL EXPEDIENTE",accion:""},
+      {perfil: "MÉDICO ASESOR",subtitulo: "DESEA REALIZAR ENTREVISTA MEDICA?",accion:"COMENZAR / ENTREVISTA CON MEDICO ASESOR"},
+      {perfil: "MÉDICO ASESOR",subtitulo: "REALIZAR LA ENTREVISTATELEFONICA? / SI",accion:"COMENZAR"},
+      {perfil: "MÉDICO ASESOR",subtitulo: "COMPLETAR IMPEDIMENTOS / AGREGAR",accion:""},
+      {perfil: "MÉDICO ASESOR",subtitulo: "COMPLETAR TRATAMIENTO / AGREGAR",accion:""},
+      {perfil: "MÉDICO ASESOR",subtitulo: "SOLICITUD INFUNDADA",accion:"SI, SI, SI , A LAS PREGUNTAS."},
+      {perfil: "MÉDICO ASESOR",subtitulo: "FINALIZAR / GENERAR PDF",accion:""}
     ];
 
-    // El resto del código para la app, perfiles, filtro, clima, etc. se mantiene igual, con llamada adaptada abajo:
+    function unificarPerfil(p) {
+      const pf = p.toLowerCase();
+      if(pf.includes("medico presidente")) return "Médico Presidente";
+      if(pf.includes("medico asignado")) return "Médico Asignado";
+      if(pf.includes("medico interconsultor")) return "Médico Interconsultor";
+      if(pf.includes("medico asesor")) return "Médico Asesor";
+      if(pf.includes("medico designado")) return "Médico Designado";
+      if(pf.includes("administrativo")) return "Administrativo";
+      return p;
+    }
 
-    const selectorRegion = document.getElementById("selectorRegion");
-
-    selectorRegion.addEventListener("change", (e) => {
-      const region = e.target.value;
-      actualizarPanelClima(region);
-      mostrarNoticia(region);
+    const perfilMap = {};
+    pasos.forEach(p => {
+      const pUni = unificarPerfil(p.perfil);
+      if(!perfilMap[pUni]) perfilMap[pUni] = [];
+      if(!perfilMap[pUni].includes(p.perfil)) perfilMap[pUni].push(p.perfil);
     });
 
-    // resto que ya tenías: actualizarPanelClima, perfiles, filtro, etc.
+    const perfilFilterDiv = document.getElementById("perfilFilter");
+    const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
+    const accionDisplay = document.getElementById("accionDisplay");
+    const searchInput = document.getElementById("searchInput");
+    const btnReset = document.getElementById("btnReset");
+    const btnWebSearch = document.getElementById("btnWebSearch");
+    const perfilSeleccionadoDiv = document.getElementById("perfilSeleccionado");
+    const selectorRegion = document.getElementById("selectorRegion");
+    const climaIcon = document.getElementById("climaIcon");
+    const climaTemp = document.getElementById("climaTemp");
+    const climaText = document.getElementById("climaText");
+    const noticiaRegion = document.getElementById("noticiaRegion");
+    const imgNoticia = document.getElementById("imgNoticia");
+    const textoNoticia = document.getElementById("textoNoticia");
+    const linkNoticia = document.getElementById("linkNoticia");
+
+    let perfilActual = null;
+
+    function limpiarSeleccion() {
+      accionDisplay.textContent = "";
+      subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
+    }
+
+    function mostrarNoticia(region) {
+      const noticia = noticiasPorRegion[region];
+      if(noticia){
+        noticiaRegion.querySelector("h4").textContent = noticia.titulo;
+        imgNoticia.src = noticia.imagen;
+        imgNoticia.alt = noticia.titulo;
+        textoNoticia.textContent = noticia.texto;
+        linkNoticia.href = noticia.enlace;
+        linkNoticia.textContent = "Leer noticia";
+        linkNoticia.style.display = "inline";
+        imgNoticia.style.display = "block";
+      } else {
+        noticiaRegion.querySelector("h4").textContent = "Noticias recientes";
+        imgNoticia.style.display = "none";
+        textoNoticia.textContent = "No se encontraron noticias para esta región.";
+        linkNoticia.style.display = "none";
+      }
+    }
+
+    function actualizarPanelClima(region) {
+      if(!region){
+        climaIcon.className = "";
+        climaIcon.textContent = "";
+        climaTemp.textContent = "-- °C";
+        climaText.textContent = "Elija una región para ver el clima";
+        mostrarNoticia(null);
+        return;
+      }
+      const condicionesDemostrativas = [
+        {icon:"☀️", temp:23, texto:"Soleado", clase:"icono-sun"},
+        {icon:"⛅", temp:18, texto:"Parcialmente nublado", clase:"icono-cloud"},
+        {icon:"🌧️", temp:14, texto:"Lluvia ligera", clase:"icono-rain"},
+        {icon:"🌫️", temp:12, texto:"Niebla", clase:"icono-cloud"},
+        {icon:"☁️", temp:15, texto:"Nublado", clase:"icono-cloud"}
+      ];
+      const seleccion = condicionesDemostrativas[Math.floor(Math.random()*condicionesDemostrativas.length)];
+      climaIcon.className = seleccion.clase;
+      climaIcon.textContent = seleccion.icon;
+      climaTemp.textContent = `${seleccion.temp} °C`;
+      climaText.textContent = `${region}: ${seleccion.texto}`;
+
+      mostrarNoticia(region);
+    }
+
+    function cargarSubtitulos(arrayPerfiles) {
+      subtituloListUl.innerHTML = "";
+      if(!arrayPerfiles || arrayPerfiles.length === 0)
+        return;
+
+      let subtitulosSet = new Set();
+      arrayPerfiles.forEach(po => {
+        pasos.filter(p => p.perfil === po).forEach(p => {
+          subtitulosSet.add(p.subtitulo);
+        });
+      });
+
+      let subtitulosArr = Array.from(subtitulosSet).sort();
+
+      const filtro = searchInput.value.trim().toLowerCase();
+      if(filtro) {
+        subtitulosArr = subtitulosArr.filter(s => {
+          return arrayPerfiles.some(po =>
+            pasos.some(p => p.perfil === po && p.subtitulo === s &&
+              (p.subtitulo + p.accion).toLowerCase().includes(filtro)));
+        });
+      }
+      if(!perfilActual && filtro) {
+        let globalSet = new Set();
+        pasos.forEach(p => {
+          if((p.subtitulo + p.accion).toLowerCase().includes(filtro))
+            globalSet.add(p.subtitulo);
+        });
+        subtitulosArr = Array.from(globalSet).sort();
+      }
+
+      if(subtitulosArr.length === 0) {
+        subtituloListUl.innerHTML = '<li style="text-align:center;color:#6a0dad;">No hay tareas</li>';
+        accionDisplay.textContent = "";
+        return;
+      }
+      subtitulosArr.forEach(subt => {
+        const li = document.createElement("li");
+        li.textContent = subt;
+        li.tabIndex = 0;
+        li.setAttribute("role", "button");
+        li.setAttribute("aria-pressed", "false");
+        li.onclick = () => seleccionarSubtitulo(subt, li, arrayPerfiles);
+        li.onkeydown = e => {
+          if(e.key === "Enter" || e.key === " ") {
+            seleccionarSubtitulo(subt, li, arrayPerfiles);
+            e.preventDefault();
+          }
+        };
+        subtituloListUl.appendChild(li);
+      });
+      limpiarSeleccion();
+    }
+
+    function seleccionarSubtitulo(subtitulo, liElem, arrayPerfiles) {
+      subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
+      liElem.classList.add("selected");
+
+      let acciones = [];
+      if(perfilActual) {
+        arrayPerfiles.forEach(pf => {
+          acciones = acciones.concat(pasos.filter(p => p.perfil === pf && p.subtitulo === subtitulo)
+              .map(p => p.accion).filter(a => a && a.trim() !== ""));
+        });
+      } else {
+        acciones = pasos.filter(p => p.subtitulo === subtitulo).map(p => p.accion)
+            .filter(a => a && a.trim() !== "");
+      }
+      acciones = [...new Set(acciones)];
+      if(acciones.length === 0) {
+        accionDisplay.textContent = "Sin acciones asociadas.";
+      } else {
+        accionDisplay.innerHTML = acciones.map(a=>`• ${a}`).join("\n");
+      }
+      accionDisplay.focus();
+    }
+
+    actualizarHora();
+
+    Object.keys(perfilMap).forEach(perfUni => {
+      const btn = document.createElement("button");
+      btn.className = "perfil-btn";
+      btn.textContent = perfUni;
+      btn.dataset.perfil = perfUni;
+      btn.onclick = () => {
+        if(perfilActual === perfUni) {
+          perfilActual = null;
+          btn.classList.remove("active");
+          perfilSeleccionadoDiv.textContent = "Seleccione un perfil";
+          cargarSubtitulos([]);
+          limpiarSeleccion();
+        } else {
+          perfilActual = perfUni;
+          document.querySelectorAll(".perfil-btn").forEach(b => b.classList.remove("active"));
+          btn.classList.add("active");
+          perfilSeleccionadoDiv.textContent = perfUni;
+          cargarSubtitulos(perfilMap[perfUni]);
+          limpiarSeleccion();
+        }
+      };
+      perfilFilterDiv.appendChild(btn);
+    });
+
+    btnReset.onclick = () => {
+      perfilActual = null;
+      limpiarSeleccion();
+      perfilSeleccionadoDiv.textContent = "Seleccione un perfil";
+      subtituloListUl.innerHTML = "";
+      accionDisplay.textContent = "";
+      searchInput.value = "";
+      document.querySelectorAll(".perfil-btn").forEach(b => b.classList.remove("active"));
+      mostrarNoticia(null);
+      actualizarPanelClima(null);
+    };
+
+    searchInput.addEventListener("input", () => {
+      if(perfilActual)
+        cargarSubtitulos(perfilMap[perfilActual]);
+      else
+        cargarSubtitulos([]);
+      limpiarSeleccion();
+    });
+
+    btnWebSearch.onclick = () => {
+      window.open("https://www.spensiones.cl/portal/compendio/596/w3-propertyvalue-3208.html", "_blank");
+    };
+
+    selectorRegion.addEventListener("change", e => {
+      actualizarPanelClima(e.target.value);
+    });
   });
 </script>
 </body>
