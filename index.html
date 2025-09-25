@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Guía de pasos SAGCOM 2</title>
+<style>
+  body::before {
+    content: "";
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: url('https://raw.githubusercontent.com/halfaro-glitch/Guia-practica-de-control-Sagcom-2/refs/heads/main/imagen.avif') no-repeat center center fixed;
+    background-size: contain;
+    filter: brightness(0.95);
+    z-index: -3;
+  }
+  body::after {
+    content: "";
+    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    background: linear-gradient(135deg,
+      rgba(255,255,255,0.15) 10%,
+      rgba(255,255,255,0.45) 30%,
+      rgba(255,255,255,0.15) 70%,
+      rgba(255,255,255,0.05) 90%);
+    pointer-events: none;
+    z-index: -2;
+  }
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0; padding: 0;
+    background-color: #fff;
+    color: #222;
+    position: relative; z-index: 0;
+  }
+  header {
+    background: linear-gradient(145deg, #3a006f 0%, #6a0dad 60%, #fff 100%);
+    color: white;
+    font-weight: bold;
+    font-size: 2rem;
+    text-align: center;
+    padding: 2rem 1rem;
+    position: relative;
+    letter-spacing: 1px;
+    text-shadow: 3px 3px 8px #00000088;
+  }
+  header .autor-text {
+    position: absolute;
+    bottom: 1rem;
+    right: 1rem;
+    color: rgba(255,255,255,0.9);
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 1.1rem;
+    user-select: none;
+  }
+  .perfil-filter {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin: 1.5rem auto;
+    max-width: 1100px;
+  }
+  .perfil-btn {
+    background: linear-gradient(145deg, #6a0dad 0%, #3a006f 90%);
+    border-radius: 24px;
+    padding: 0.8rem 2.2rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 16px #3a006f77;
+    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    text-shadow: 1px 1px 10px #000000cc;
+  }
+  .perfil-btn:hover, .perfil-btn.active {
+    box-shadow: 0 8px 24px #6a0daddd;
+    transform: scale(1.1);
+  }
+  .filters {
+    max-width: 1100px;
+    margin: 0.8rem auto 2rem auto;
+    display: flex;
+    justify-content: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .filters input[type=search] {
+    border: 2px solid #6a0dad;
+    border-radius: 10px;
+    padding: 0.55rem 1.7rem;
+    font-size: 1rem;
+    outline: none;
+    box-shadow: 0 1px 7px #3a006f21;
+    transition: 0.3s box-shadow ease;
+    min-width: 180px;
+  }
+  .filters input[type=search]:focus {
+    box-shadow: 0 0 13px #6a0dad77;
+    border-color: #3a006f;
+  }
+  .filters button {
+    font-weight: 700;
+    padding: 0.5rem 1.3rem;
+    border-radius: 12px;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    color: white;
+    box-shadow: 0 3px 20px #3a006fcc;
+    transition: 0.3s background-color ease;
+  }
+  #btnReset {
+    background-color: #a010d3;
+  }
+  #btnReset:hover {
+    background-color: #68009a;
+  }
+  #btnWebSearch {
+    background-color: #3d84e6;
+  }
+  #btnWebSearch:hover {
+    background-color: #245ea7;
+  }
+  main {
+    max-width: 1100px;
+    margin: 0 auto 3rem;
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 2px 20px #3a006f2e;
+    padding: 1rem 2rem;
+  }
+  .content-container {
+    display: flex;
+    gap: 2rem;
+  }
+  .subtitulo-container, .accion-container {
+    border: 2px solid #6a0dad;
+    border-radius: 16px;
+    padding: 1rem 1.3rem;
+  }
+  .subtitulo-container {
+    width: 300px;
+    max-height: 600px;
+    overflow-y: auto;
+    background: #f2eeff;
+    font-weight: 600;
+    font-size: 1rem;
+    color: #3a006f;
+  }
+  .subtitulo-container h3 {
+    margin: 0 0 12px 0;
+    font-weight: 800;
+    color: #6a0dad;
+    font-size: 1.3rem;
+    border-bottom: 2px solid #6a0dad;
+    padding-bottom: 6px;
+  }
+  .subtitulo-list ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  .subtitulo-list li {
+    padding: 0.55rem 0.8rem;
+    margin-bottom: 5px;
+    cursor: pointer;
+    border-radius: 12px;
+    transition: background-color 0.28s ease, color 0.28s ease;
+  }
+  .subtitulo-list li:hover, .subtitulo-list li.selected {
+    background-color: #6a0dad;
+    color: white;
+    font-weight: 700;
+  }
+  .accion-container {
+    flex-grow: 1;
+    background: #fcfbfd;
+    min-height: 180px;
+    font-weight: 600;
+    font-size: 1.12rem;
+    color: #4a037d;
+  }
+  .accion-container h3 {
+    font-weight: 900;
+    font-size: 1.5rem;
+    color: #6a0dad;
+    margin-bottom: 12px;
+  }
+  .accion-text {
+    white-space: pre-line;
+    padding-left: 1rem;
+  }
+  @media (max-width: 900px) {
+    .content-container {
+      flex-direction: column;
+    }
+    .subtitulo-container,
+    .accion-container {
+      width: 100%;
+      max-height: none;
+    }
+  }
+</style>
+</head>
+<body>
+<header>
+  Guía de pasos para SAGCOM 2
+  <div class="autor-text">Creado por Héctor Alfaro M.</div>
+</header>
+
+<div class="perfil-filter" id="perfilFilter"></div>
+
+<div class="filters">
+  <input type="search" id="searchInput" placeholder="Filtrar texto/acción..." aria-label="Filtrar acciones" />
+  <button id="btnReset" title="Borrar filtros">Borrar filtros</button>
+  <button id="btnWebSearch" title="Buscar en sitio web oficial">Buscar en spensiones.cl</button>
+</div>
+
+<main>
+  <div class="content-container">
+    <section class="subtitulo-container" aria-label="Tareas de perfil seleccionado">
+      <h3>Tareas</h3>
+      <nav class="subtitulo-list" id="subtituloList">
+        <ul></ul>
+      </nav>
+    </section>
+    <section class="accion-container" aria-label="Acción a realizar para subtitulo">
+      <h3>Acción a realizar</h3>
+      <div class="accion-text" id="accionDisplay" tabindex="0" aria-live="polite"></div>
+    </section>
+  </div>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const pasos = [
+    {perfil: "ADMINISTRATIVO", subtitulo: "ANALISIS DE ADMISIBILIDAD", accion:"VER + / REGULAR / BUSCAR RUT / VER +"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "ADMISIBILIDAD DE LA SOLICITUD", accion:"ACEPTAR / CONFIRMAR"},
+    {perfil: "MÉDICO PRESIDENTE", subtitulo: "ASIGNAR MEDICO", accion:"REGULAR / BUSCAR RUT"},
+    {perfil: "MÉDICO PRESIDENTE", subtitulo: "ACCIONES / AUTOASIGNAR Y/O MODIFICAR", accion:""},
+    {perfil: "MÉDICO PRESIDENTE", subtitulo: "MARCAR MÉDICO / CONFIRMAR MÉDICO", accion:""},
+    {perfil: "ADMINISTRATIVO", subtitulo: "INICIO / CITACIONES", accion:"VER + / REGULAR / BUSCAR RUT"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "ACCIONES / REAGENDAR 1 O 2 SOLICITUDES", accion:"(DEPENDE EL CASO)"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "GESTIONAR CITACION / PREVISUALIZAR CARTA", accion:"CONFIRMAR CITA"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "… NOMINA DE CORREO", accion:"MARCAR SOLICITUDES / ASIGNAR NÓMINA / CREAR"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "NÓMINA / EN GESTION", accion:"SE PINCHA LA 1ERA / REVISAR NOMINA"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "DESCARGAR DOCUMENTO NÓMINA", accion:""},
+    {perfil: "ADMINISTRATIVO", subtitulo: "GUIA DE DESPACHO DE CORREOS", accion:"EDITAR No DE NÓMINA"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "DOCUMENTO GUIA DE DESPACHO", accion:"CAMBIAR FECHA (HOY) / ADJUNTAR NÓMINA / GUARDAR"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "INICIO", accion:"CONFIRMAR ASISTENCIA A EVALUACIONES"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "CONFIRMAR ASISTENCIA A EVALUACIONES", accion:"PRESENCIAL / TELEFONICA"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "BUSCAR C/ RUT / ACCIONES", accion:"SOBRECUPO / CAMBIAR HORA / CONFIRMAR / SI (X 2)"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "VER +", accion:"REGULAR / BUSCAR RUT / VER +"},
+    {perfil: "MÉDICO ASIGNADO", subtitulo: "MIS EXPEDIENTES", accion:"EVALUACIÓN MÉDICA"},
+    {perfil: "MÉDICO ASIGNADO", subtitulo: "PENDIENTE DE INICIO / EN EVALUACION", accion:"BUSCAR RUT / IR AL EXPEDIENTE"},
+    {perfil: "MÉDICO ASIGNADO", subtitulo: "DESEA REALIZAR EVALUACION MEDICA?", accion:"COMENZAR"},
+    {perfil: "MÉDICO ASIGNADO", subtitulo: "ANAMNESIS", accion:"COMPLETAR / GUARDAR"},
+    {perfil: "MÉDICO ASIGNADO", subtitulo: "EXAMEN FÍSICO", accion:"COMPLETAR / GUARDAR"},
+    {perfil: "MÉDICO ASIGNADO", subtitulo: "PLAN DE ACCIÓN", accion:"ACCIÓN A SEGUIR / PERITAJES Y/O EXAMENES"},
+    {perfil: "MÉDICO ASIGNADO", subtitulo: "NUEVA SOLICITUD", accion:""},
+    {perfil: "MÉDICO ASIGNADO", subtitulo: "SOLICITAR INTERCONSULTAS", accion:"ESPECIALIDADES (…..) SELECCIONAR"},
+    {perfil: "MÉDICO ASIGNADO", subtitulo: "SOLICITAR EXAMENES", accion:"EXAMENES DE LABORATORIO / FILTRAR / CONFIRMAR"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "ORDENES DE ATENCIÓN POR GESTIONAR", accion:"VER + / REGULAR / BUSCAR RUT"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "GESTIONAR ORDEN", accion:"SELECCIONAR COMISION / PROPUESTA DE SISTEMA N° 1"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "LABORATORIO VERIS", accion:""},
+    {perfil: "ADMINISTRATIVO", subtitulo: "INTERCONSULTA SOLICITADA", accion:"COMPLETAR / ACCIONES / MODALIDAD DE ATENCION"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "CAMBIAR FECHA / HORA", accion:""},
+    {perfil: "ADMINISTRATIVO", subtitulo: "SELECCIONAR INTERCONSULTOR (POR DEFECTO)", accion:""},
+    {perfil: "ADMINISTRATIVO", subtitulo: "AGENDAR / CONFIRMAR / EMITIR ORDENES", accion:""},
+    {perfil: "MÉDICO INTERCONSULTOR", subtitulo: "...ÓRDENES DE ATENCIÓN", accion:""},
+    {perfil: "MÉDICO INTERCONSULTOR", subtitulo: "ÓRDENES EMITIDAS", accion:"FILTRAR CON RUT / SELECCIONAR, CONFIRMAR"},
+    {perfil: "MÉDICO INTERCONSULTOR", subtitulo: "CONFIRMAR C/RUT/ INDICAR HORA / ACEPTAR", accion:""},
+    {perfil: "MÉDICO INTERCONSULTOR", subtitulo: "ORDENES CONFIRMADAS", accion:"SELECCIONAR / REALIZAR EVALUACIÓN"},
+    {perfil: "MÉDICO INTERCONSULTOR", subtitulo: "ADJUNTAR INFORME FINAL / ENVÍAR A REVISIÓN", accion:""},
+    {perfil: "LABORATORIO", subtitulo: "ÓRDENES EMITIDAS", accion:"FILTRAR CON RUT / SELECCIONAR, CONFIRMAR"},
+    {perfil: "LABORATORIO", subtitulo: "CONFIRMAR C/RUT/ INDICAR HORA / ACEPTAR", accion:""},
+    {perfil: "LABORATORIO", subtitulo: "ÓRDENES CONFIRMADAS", accion:"SELECCIONAR / REALIZAR EVALUACIÓN"},
+    {perfil: "LABORATORIO", subtitulo: "DOCUMENTOS DE PRESTACIONES", accion:"ADJUNTAR / ACEPTAR / ENVÍAR A REVISIÓN / ACEPTAR"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "ÓRDENES DE ATENCIÓN", accion:"ORDENES DE ATENCIÓN TRABAJADAS"},
+    {perfil: "ADMINISTRATIVO", subtitulo: "EN VERIFICACIÓN DE RECEPCIÓN", accion:"ACCIONES /VALIDAR PARA COBRO / ACEPTAR"},
+    {perfil: "MÉDICO INTERCONSULTOR", subtitulo: "ORDENES VALIDADAS PARA COBRO", accion:"FILTRAR C/ RUT / SELECCIONAR / COBRAR"},
+    {perfil: "MÉDICO ASESOR", subtitulo: "MI TRABAJO", accion:"EVALUACIÓN MEDICA"},
+    {perfil: "MÉDICO ASESOR", subtitulo: "PENDIENTE INICIO / EN EVALUACIÓN", accion:"FILTRAR C/RUT / IR AL EXPEDIENTE"},
+    {perfil: "MÉDICO ASESOR", subtitulo: "GESTIÓN DEL EXPEDIENTE", accion:""},
+    {perfil: "MÉDICO ASESOR", subtitulo: "DESEA REALIZAR ENTREVISTA MEDICA?", accion:"COMENZAR / ENTREVISTA CON MEDICO ASESOR"},
+    {perfil: "MÉDICO ASESOR", subtitulo: "REALIZAR LA ENTREVISTATELEFONICA? / SI", accion:"COMENZAR"},
+    {perfil: "MÉDICO ASESOR", subtitulo: "COMPLETAR IMPEDIMENTOS / AGREGAR", accion:""},
+    {perfil: "MÉDICO ASESOR", subtitulo: "COMPLETAR TRATAMIENTO / AGREGAR", accion:""},
+    {perfil: "MÉDICO ASESOR", subtitulo: "SOLICITUD INFUNDADA", accion:"SI, SI, SI , A LAS PREGUNTAS."},
+    {perfil: "MÉDICO ASESOR", subtitulo: "FINALIZAR / GENERAR PDF", accion:""},
+  ];
+
+  function unificarPerfil(perfil) {
+    const pf = perfil.toLowerCase();
+    if(pf.includes("medico presidente")) return "Médico Presidente";
+    if(pf.includes("medico asignado")) return "Médico Asignado";
+    if(pf.includes("medico interconsultor")) return "Médico Interconsultor";
+    if(pf.includes("medico asesor")) return "Médico Asesor";
+    if(pf.includes("medico designado")) return "Médico Designado";
+    if(pf.includes("administrativo")) return "Administrativo";
+    return perfil;
+  }
+
+  const perfilMap = {};
+  pasos.forEach(p => {
+    const pUni = unificarPerfil(p.perfil);
+    if(!perfilMap[pUni]) perfilMap[pUni] = [];
+    if(!perfilMap[pUni].includes(p.perfil)) perfilMap[pUni].push(p.perfil);
+  });
+
+  const perfilFilterDiv = document.getElementById("perfilFilter");
+  const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
+  const accionDisplay = document.getElementById("accionDisplay");
+  const searchInput = document.getElementById("searchInput");
+  const btnReset = document.getElementById("btnReset");
+  const btnWebSearch = document.getElementById("btnWebSearch");
+
+  let perfilActual = null;
+
+  function limpiarSeleccion() {
+    accionDisplay.textContent = "";
+    subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
+  }
+
+  function cargarSubtitulos(perfiles) {
+    subtituloListUl.innerHTML = "";
+    if(!perfiles || perfiles.length === 0) return;
+
+    let subtitulosSet = new Set();
+    perfiles.forEach(pO => {
+      pasos.filter(p => p.perfil === pO).forEach(p => {
+        subtitulosSet.add(p.subtitulo);
+      });
+    });
+
+    let subtitulosArr = Array.from(subtitulosSet).sort();
+
+    const filtro = searchInput.value.trim().toLowerCase();
+    if(filtro) {
+      subtitulosArr = subtitulosArr.filter(s => {
+        return perfiles.some(pO =>
+          pasos.some(p => p.perfil === pO && p.subtitulo === s && (p.subtitulo + p.accion).toLowerCase().includes(filtro))
+        );
+      });
+    }
+
+    if(subtitulosArr.length === 0) {
+      subtituloListUl.innerHTML = '<li style="text-align:center;color:#6a0dad;">No hay tareas</li>';
+      accionDisplay.textContent = "";
+      return;
+    }
+
+    subtitulosArr.forEach(s => {
+      const li = document.createElement("li");
+      li.textContent = s;
+      li.tabIndex = 0;
+      li.setAttribute("role", "button");
+      li.setAttribute("aria-pressed", "false");
+      li.onclick = () => seleccionarSubtitulo(s, li, perfiles);
+      li.onkeydown = e => {
+        if(e.key === "Enter" || e.key === " ") {
+          seleccionarSubtitulo(s, li, perfiles);
+          e.preventDefault();
+        }
+      };
+      subtituloListUl.appendChild(li);
+    });
+
+    limpiarSeleccion();
+  }
+
+  function seleccionarSubtitulo(subtitulo, liElem, perfiles) {
+    subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
+    liElem.classList.add("selected");
+
+    let acciones = [];
+    perfiles.forEach(pO => {
+      acciones = acciones.concat(
+        pasos.filter(p => p.perfil === pO && p.subtitulo === subtitulo)
+        .map(p => p.accion)
+        .filter(a => a && a.trim() !== "")
+      );
+    });
+
+    acciones = [...new Set(acciones)];
+
+    if(acciones.length === 0) {
+      accionDisplay.textContent = "Sin acciones asociadas.";
+    } else {
+      accionDisplay.innerHTML = acciones.map(a => `<p>• ${a}</p>`).join("");
+    }
+    accionDisplay.focus();
+  }
+
+  Object.keys(perfilMap).forEach(pUni => {
+    const btn = document.createElement("button");
+    btn.className = "perfil-btn";
+    btn.textContent = pUni;
+    btn.dataset.perfil = pUni;
+    btn.onclick = () => {
+      perfilActual = pUni;
+      document.querySelectorAll(".perfil-btn").forEach(b =>
+        b.classList.toggle("active", b.dataset.perfil === pUni));
+      cargarSubtitulos(perfilMap[pUni]);
+      limpiarSeleccion();
+    };
+    perfilFilterDiv.appendChild(btn);
+  });
+
+  btnReset.onclick = () => {
+    perfilActual = null;
+    limpiarSeleccion();
+    subtituloListUl.innerHTML = "";
+    accionDisplay.textContent = "";
+    searchInput.value = "";
+    document.querySelectorAll(".perfil-btn").forEach(b => b.classList.remove("active"));
+  };
+
+  searchInput.addEventListener("input", () => {
+    if(perfilActual) {
+      cargarSubtitulos(perfilMap[perfilActual]);
+    }
+    limpiarSeleccion();
+  });
+
+  btnWebSearch.onclick = () => {
+    window.open("https://www.spensiones.cl/portal/compendio/596/w3/propertyvalue-3208.html", "_blank");
+  };
+});
+</script>
+</body>
+</html>
