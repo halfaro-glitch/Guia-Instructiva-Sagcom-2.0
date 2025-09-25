@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Guía SAGCOM 2 - Segmentación y Búsqueda Global</title>
+<title>Guía SAGCOM 2 - Clima con selector completo y filtro global</title>
 <style>
   body::before {
     content: "";
@@ -53,6 +53,90 @@
     user-select: none;
   }
 
+  #panelClima {
+    position: fixed;
+    bottom: 8%;
+    left: 12px;
+    background: rgba(255 255 255 / 0.9);
+    border-radius: 20px;
+    padding: 14px 22px;
+    box-shadow: 0 3px 18px #6a0dadaa;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    color: #3a006f;
+    width: 270px;
+    z-index: 100;
+  }
+  #panelClima header {
+    font-weight: 700;
+    margin-bottom: 8px;
+    font-size: 1.15rem;
+    user-select:none;
+  }
+  #horaActual {
+    font-size: 1.5rem;
+    font-weight: 900;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+  }
+  #selectorRegion {
+    width: 100%;
+    margin-bottom: 12px;
+    padding: 8px 15px;
+    font-size: 1rem;
+    border-radius: 10px;
+    border: 2px solid #6a0dad;
+    background: #fafafa;
+    color: #3a006f;
+    cursor: pointer;
+  }
+  #climaInfo {
+    display: flex;
+    align-items: center;
+  }
+  #climaIcon {
+    width: 52px;
+    height: 52px;
+    margin-right: 16px;
+    filter: drop-shadow(0 0 5px #6a0dadbb);
+    font-size: 2.8rem;
+  }
+  /* Iconos animados */
+  .icono-sun {
+    animation: rotar 30s linear infinite;
+  }
+  .icono-cloud {
+    animation: floatCloud 6s ease-in-out infinite;
+  }
+  .icono-rain {
+    position: relative;
+  }
+  .icono-rain::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    width: 3px;
+    height: 12px;
+    background: #3a006fcc;
+    border-radius: 50%;
+    filter: blur(0.8px);
+    animation: caerLluvia 1.2s linear infinite;
+    animation-delay: 0s;
+    top: 6px;
+  }
+  @keyframes rotar {
+    0% { transform: rotate(0turn);}
+    100% { transform: rotate(1turn);}
+  }
+  @keyframes floatCloud {
+    0%, 100% { transform: translateY(0);}
+    50% {transform: translateY(6px);}
+  }
+  @keyframes caerLluvia {
+    0% {opacity: 1; transform: translateY(0);}
+    100% {opacity: 0; transform: translateY(12px);}
+  }
+
+  /* Resto estilos (segmentación, filtro, contenido) */
   .perfil-filter {
     display: flex;
     justify-content: center;
@@ -83,7 +167,6 @@
     box-shadow: 0 10px 28px #6a0dadcc;
     transform: scale(1.15);
   }
-
   #perfilSeleccionado {
     position: absolute;
     top: 140px;
@@ -104,7 +187,6 @@
     max-width: 300px;
     z-index: 101;
   }
-
   .filters {
     max-width: 1100px;
     margin: 0.8rem auto 2rem auto;
@@ -151,7 +233,6 @@
   #btnWebSearch:hover {
     background-color: #245ea7;
   }
-
   main {
     max-width: 1100px;
     margin: 0 auto 3rem;
@@ -162,7 +243,6 @@
     display: flex;
     gap: 20px;
   }
-
   .subtitulo-container {
     border: 2px solid #6a0dad;
     border-radius: 16px;
@@ -201,7 +281,6 @@
     color: white;
     font-weight: 700;
   }
-
   .accion-container {
     flex-grow: 1;
     background: #fcfbfd;
@@ -234,6 +313,41 @@
   <div class="autor-text" aria-label="Autor del documento">Creado por Héctor Alfaro M.</div>
 </header>
 
+<div id="panelClima" aria-label="Panel clima e información actual">
+  <header>Clima y Hora</header>
+  <div id="horaActual" aria-live="polite" aria-atomic="true">--:--:--</div>
+  <select id="selectorRegion" aria-label="Seleccionar región de Chile para ver clima">
+    <option value="" disabled selected>Seleccione región</option>
+    <option value="Arica">Arica</option>
+    <option value="Iquique">Iquique</option>
+    <option value="Antofagasta">Antofagasta</option>
+    <option value="Copiapo">Copiapó</option>
+    <option value="La Serena">La Serena</option>
+    <option value="Los Andes">Los Andes</option>
+    <option value="Viña del Mar">Viña del Mar</option>
+    <option value="Casa Matriz">Casa Matriz (Santiago)</option>
+    <option value="Rancagua">Rancagua</option>
+    <option value="Talca">Talca</option>
+    <option value="Chillan">Chillán</option>
+    <option value="Concepcion">Concepción</option>
+    <option value="Lo Angeles">Lo Angeles</option>
+    <option value="Temuco">Temuco</option>
+    <option value="Valdivia">Valdivia</option>
+    <option value="Osorno">Osorno</option>
+    <option value="Puerto Montt">Puerto Montt</option>
+    <option value="Chiloe">Chiloé</option>
+    <option value="Coyhaique">Coyhaique</option>
+    <option value="Punta Arenas">Punta Arenas</option>
+  </select>
+  <div id="climaInfo" aria-live="polite" role="region" style="margin-top:6px;">
+    <div id="climaIcon" aria-label="Icono clima" role="img"></div>
+    <div>
+      <div id="climaTemp">-- °C</div>
+      <div id="climaText">Elija una región para ver el clima</div>
+    </div>
+  </div>
+</div>
+
 <div class="perfil-filter" id="perfilFilter" aria-label="Filtros por perfiles"></div>
 <div id="perfilSeleccionado" aria-live="polite">Seleccione un perfil</div>
 
@@ -255,6 +369,55 @@
 </main>
 
 <script>
+const iconosAnim = {
+  "☀️": "icono-sun",
+  "⛅": "icono-cloud",
+  "🌧️": "icono-rain",
+  "🌫️": "icono-cloud",
+  "☁️": "icono-cloud"
+};
+
+const climaEstados = [
+  { icon:"☀️", temp:23, texto:"Soleado", clase:"icono-sun" },
+  { icon:"⛅", temp:18, texto:"Parcialmente nublado", clase:"icono-cloud" },
+  { icon:"🌧️", temp:14, texto:"Lluvia ligera", clase:"icono-rain" },
+  { icon:"🌫️", temp:12, texto:"Niebla", clase:"icono-cloud" },
+  { icon:"☁️", temp:15, texto:"Nublado", clase:"icono-cloud" }
+];
+
+function actualizarHora() {
+  const divHora = document.getElementById("horaActual");
+  setInterval(() => {
+    const ahora = new Date();
+    const h = String(ahora.getHours()).padStart(2,"0");
+    const m = String(ahora.getMinutes()).padStart(2,"0");
+    const s = String(ahora.getSeconds()).padStart(2,"0");
+    divHora.textContent = `${h}:${m}:${s}`;
+  }, 1000);
+}
+
+function actualizarPanelClima(region){
+  const climaIcon = document.getElementById("climaIcon");
+  const climaTemp = document.getElementById("climaTemp");
+  const climaText = document.getElementById("climaText");
+
+  if(!region){
+    climaIcon.className = "";
+    climaIcon.textContent = "";
+    climaTemp.textContent = "-- °C";
+    climaText.textContent = "Elija una región para ver el clima";
+    return;
+  }
+  const estado = climaEstados[Math.floor(Math.random()*climaEstados.length)];
+  climaIcon.className = estado.clase;
+  climaIcon.textContent = estado.icon;
+  climaTemp.textContent = `${estado.temp} °C`;
+  climaText.textContent = `${region}: ${estado.texto}`;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  actualizarHora();
+
   const pasos = [
     { perfil: "ADMINISTRATIVO", subtitulo: "ANALISIS DE ADMISIBILIDAD", accion: "VER + / REGULAR / BUSCAR RUT / VER +" },
     { perfil: "ADMINISTRATIVO", subtitulo: "ADMISIBILIDAD DE LA SOLICITUD", accion: "ACEPTAR / CONFIRMAR" },
@@ -283,8 +446,8 @@
     { perfil: "MÉDICO ASIGNADO", subtitulo: "SOLICITAR INTERCONSULTAS", accion: "ESPECIALIDADES (…..) SELECCIONAR" },
     { perfil: "MÉDICO ASIGNADO", subtitulo: "SOLICITAR EXAMENES", accion: "EXAMENES DE LABORATORIO / FILTRAR / CONFIRMAR" },
     { perfil: "ADMINISTRATIVO", subtitulo: "ORDENES DE ATENCIÓN POR GESTIONAR", accion: "VER + / REGULAR / BUSCAR RUT" },
-    { perfil: "ADMINISTRATIVO", subtitulo: "GESTIONAR ORDEN", accion: "SELECCIONAR COMISION / PROPUESTA DE SISTEMA N° 1" },
-    { perfil: "ADMINISTRATIVO", subtitulo: "LABORATORIO VERIS", accion: "" },
+    { perfil: "ADMINISTRATIVO", subtitulo: "GESTIONAR ORDEN", accion: "SELECCIONAR COMISION / PROPUESTA DE SISTEMA N° 1"},
+    { perfil: "ADMINISTRATIVO", subtitulo: "LABORATORIO VERIS", accion: ""},
     { perfil: "ADMINISTRATIVO", subtitulo: "INTERCONSULTA SOLICITADA", accion: "COMPLETAR / ACCIONES / MODALIDAD DE ATENCION" },
     { perfil: "ADMINISTRATIVO", subtitulo: "CAMBIAR FECHA / HORA", accion: "" },
     { perfil: "ADMINISTRATIVO", subtitulo: "SELECCIONAR INTERCONSULTOR (POR DEFECTO)", accion: "" },
@@ -314,125 +477,124 @@
 
   function unificarPerfil(p) {
     const pf = p.toLowerCase();
-    if (pf.includes("medico presidente")) return "Médico Presidente";
-    if (pf.includes("medico asignado")) return "Médico Asignado";
-    if (pf.includes("medico interconsultor")) return "Médico Interconsultor";
-    if (pf.includes("medico asesor")) return "Médico Asesor";
-    if (pf.includes("medico designado")) return "Médico Designado";
-    if (pf.includes("administrativo")) return "Administrativo";
+    if(pf.includes("medico presidente")) return "Médico Presidente";
+    if(pf.includes("medico asignado")) return "Médico Asignado";
+    if(pf.includes("medico interconsultor")) return "Médico Interconsultor";
+    if(pf.includes("medico asesor")) return "Médico Asesor";
+    if(pf.includes("medico designado")) return "Médico Designado";
+    if(pf.includes("administrativo")) return "Administrativo";
     return p;
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
-    const perfilFilterDiv = document.getElementById("perfilFilter");
-    const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
+  function limpiarSeleccion() {
     const accionDisplay = document.getElementById("accionDisplay");
+    const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
+    accionDisplay.textContent = "";
+    subtituloListUl.querySelectorAll("li").forEach(li=>li.classList.remove("selected"));
+  }
+
+  function cargarSubtitulos(arrayPerfiles) {
+    const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
     const searchInput = document.getElementById("searchInput");
-    const btnReset = document.getElementById("btnReset");
-    const btnWebSearch = document.getElementById("btnWebSearch");
-    const perfilSeleccionadoDiv = document.getElementById("perfilSeleccionado");
+    subtituloListUl.innerHTML="";
+    if(!arrayPerfiles || arrayPerfiles.length==0) return;
 
-    let perfilActual = null;
+    let subtitulosSet = new Set();
+    arrayPerfiles.forEach(po=>{
+      pasos.filter(p=>p.perfil===po).forEach(p=>subtitulosSet.add(p.subtitulo));
+    });
+    let subtitulosArr = Array.from(subtitulosSet).sort();
 
-    const perfilMap = {};
-    pasos.forEach(p => {
-      const pUni = unificarPerfil(p.perfil);
-      if (!perfilMap[pUni]) perfilMap[pUni] = [];
-      if (!perfilMap[pUni].includes(p.perfil)) perfilMap[pUni].push(p.perfil);
+    const filtro = searchInput.value.trim().toLowerCase();
+
+    if(filtro){
+      subtitulosArr = subtitulosArr.filter(s=>{
+        return pasos.some(p=>(p.subtitulo+p.accion).toLowerCase().includes(filtro));
+      });
+    }
+
+    if(subtitulosArr.length==0){
+      subtituloListUl.innerHTML = '<li style="text-align:center;color:#6a0dad;">No hay tareas</li>';
+      document.getElementById("accionDisplay").textContent="";
+      return;
+    }
+
+    subtitulosArr.forEach(subt=>{
+      const li=document.createElement("li");
+      li.textContent=subt;
+      li.tabIndex=0;
+      li.setAttribute("role","button");
+      li.setAttribute("aria-pressed","false");
+      li.onclick=()=>seleccionarSubtitulo(subt,li,arrayPerfiles);
+      li.onkeydown=e=>{
+        if(e.key==="Enter"||e.key===" "){
+          seleccionarSubtitulo(subt,li,arrayPerfiles);
+          e.preventDefault();
+        }
+      };
+      subtituloListUl.appendChild(li);
+    });
+    limpiarSeleccion();
+  }
+
+  function seleccionarSubtitulo(subtitulo, liElem, arrayPerfiles) {
+    const subtituloListUl = document.getElementById("subtituloList");
+    const accionDisplay = document.getElementById("accionDisplay");
+    subtituloListUl.querySelectorAll("li").forEach(li=>li.classList.remove("selected"));
+    liElem.classList.add("selected");
+
+    let acciones = [];
+    if(perfilActual){
+      arrayPerfiles.forEach(pf=>{
+        acciones = acciones.concat(pasos.filter(p=>p.perfil===pf && p.subtitulo===subtitulo).map(p=>p.accion).filter(a=>a&&a.trim()!==""));
+      });
+    } else {
+      acciones = pasos.filter(p=>p.subtitulo===subtitulo).map(p=>p.accion).filter(a=>a&&a.trim()!=="");
+    }
+    acciones=[...new Set(acciones)];
+    if(acciones.length===0){
+      accionDisplay.textContent="Sin acciones asociadas.";
+    } else {
+      accionDisplay.innerHTML=acciones.map(a=>`• ${a}`).join("\n");
+    }
+    accionDisplay.focus();
+  }
+
+  document.addEventListener("DOMContentLoaded",()=>{
+    const perfilFilterDiv=document.getElementById("perfilFilter");
+    const subtituloListUl=document.getElementById("subtituloList").querySelector("ul");
+    const accionDisplay=document.getElementById("accionDisplay");
+    const searchInput=document.getElementById("searchInput");
+    const btnReset=document.getElementById("btnReset");
+    const btnWebSearch=document.getElementById("btnWebSearch");
+    const perfilSeleccionadoDiv=document.getElementById("perfilSeleccionado");
+
+    let perfilActual=null;
+
+    const perfilMap={};
+    pasos.forEach(p=>{
+      const pUni=unificarPerfil(p.perfil);
+      if(!perfilMap[pUni])perfilMap[pUni]=[];
+      if(!perfilMap[pUni].includes(p.perfil))perfilMap[pUni].push(p.perfil);
     });
 
-    function limpiarSeleccion() {
-      accionDisplay.textContent = "";
-      subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
-    }
-
-    function cargarSubtitulos(arrayPerfiles) {
-      subtituloListUl.innerHTML = "";
-      if (!arrayPerfiles || arrayPerfiles.length === 0) return;
-
-      let subtitulosSet = new Set();
-      arrayPerfiles.forEach(po => {
-        pasos.filter(p => p.perfil === po).forEach(p => {
-          subtitulosSet.add(p.subtitulo);
-        });
-      });
-
-      let subtitulosArr = Array.from(subtitulosSet).sort();
-
-      const filtro = searchInput.value.trim().toLowerCase();
-
-      if (filtro) {
-        // Filtro global: buscar entre todos los subtitulos y acciones
-        subtitulosArr = subtitulosArr.filter(s => {
-          return pasos.some(p => (p.subtitulo + p.accion).toLowerCase().includes(filtro));
-        });
-      }
-
-      if (subtitulosArr.length === 0) {
-        subtituloListUl.innerHTML = '<li style="text-align:center;color:#6a0dad;">No hay tareas</li>';
-        accionDisplay.textContent = "";
-        return;
-      }
-
-      subtitulosArr.forEach(subt => {
-        const li = document.createElement("li");
-        li.textContent = subt;
-        li.tabIndex = 0;
-        li.setAttribute("role", "button");
-        li.setAttribute("aria-pressed", "false");
-        li.onclick = () => seleccionarSubtitulo(subt, li, arrayPerfiles);
-        li.onkeydown = e => {
-          if (e.key === "Enter" || e.key === " ") {
-            seleccionarSubtitulo(subt, li, arrayPerfiles);
-            e.preventDefault();
-          }
-        };
-        subtituloListUl.appendChild(li);
-      });
-      limpiarSeleccion();
-    }
-
-    function seleccionarSubtitulo(subtitulo, liElem, arrayPerfiles) {
-      subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
-      liElem.classList.add("selected");
-
-      let acciones = [];
-      if (perfilActual) {
-        arrayPerfiles.forEach(pf => {
-          acciones = acciones.concat(pasos.filter(p => p.perfil === pf && p.subtitulo === subtitulo)
-            .map(p => p.accion).filter(a => a && a.trim() !== ""));
-        });
-      } else {
-        acciones = pasos.filter(p => p.subtitulo === subtitulo)
-          .map(p => p.accion)
-          .filter(a => a && a.trim() !== "");
-      }
-      acciones = [...new Set(acciones)];
-      if (acciones.length === 0) {
-        accionDisplay.textContent = "Sin acciones asociadas.";
-      } else {
-        accionDisplay.innerHTML = acciones.map(a => `• ${a}`).join("\n");
-      }
-      accionDisplay.focus();
-    }
-
-    Object.keys(perfilMap).forEach(perfUni => {
-      const btn = document.createElement("button");
-      btn.className = "perfil-btn";
-      btn.textContent = perfUni;
-      btn.dataset.perfil = perfUni;
-      btn.onclick = () => {
-        if (perfilActual === perfUni) {
-          perfilActual = null;
+    Object.keys(perfilMap).forEach(perfUni=>{
+      const btn=document.createElement("button");
+      btn.className="perfil-btn";
+      btn.textContent=perfUni;
+      btn.dataset.perfil=perfUni;
+      btn.onclick=()=>{
+        if(perfilActual===perfUni){
+          perfilActual=null;
           btn.classList.remove("active");
-          perfilSeleccionadoDiv.textContent = "Seleccione un perfil";
+          perfilSeleccionadoDiv.textContent="Seleccione un perfil";
           cargarSubtitulos([]);
           limpiarSeleccion();
         } else {
-          perfilActual = perfUni;
-          document.querySelectorAll(".perfil-btn").forEach(b => b.classList.remove("active"));
+          perfilActual=perfUni;
+          document.querySelectorAll(".perfil-btn").forEach(b=>b.classList.remove("active"));
           btn.classList.add("active");
-          perfilSeleccionadoDiv.textContent = perfUni;
+          perfilSeleccionadoDiv.textContent=perfUni;
           cargarSubtitulos(perfilMap[perfUni]);
           limpiarSeleccion();
         }
@@ -440,25 +602,29 @@
       perfilFilterDiv.appendChild(btn);
     });
 
-    btnReset.onclick = () => {
-      perfilActual = null;
+    btnReset.onclick=()=>{
+      perfilActual=null;
       limpiarSeleccion();
-      perfilSeleccionadoDiv.textContent = "Seleccione un perfil";
-      document.getElementById("subtituloList").querySelector("ul").innerHTML = "";
-      document.getElementById("accionDisplay").textContent = "";
-      searchInput.value = "";
-      document.querySelectorAll(".perfil-btn").forEach(b => b.classList.remove("active"));
-      cargarSubtitulos(Object.values(perfilMap).flat());
+      perfilSeleccionadoDiv.textContent="Seleccione un perfil";
+      document.getElementById("subtituloList").querySelector("ul").innerHTML="";
+      document.getElementById("accionDisplay").textContent="";
+      searchInput.value="";
+      document.querySelectorAll(".perfil-btn").forEach(b=>b.classList.remove("active"));
     };
 
-    searchInput.addEventListener("input", () => {
-      cargarSubtitulos(Object.values(perfilMap).flat()); // filtro global sin perfil
+    searchInput.addEventListener("input",()=>{
+      cargarSubtitulos(Object.values(perfilMap).flat());
     });
 
-    btnWebSearch.onclick = () => {
-      window.open("https://www.spensiones.cl/portal/compendio/596/w3-propertyvalue-3208.html", "_blank");
-    };
+    btnWebSearch.onclick=()=>{
+      window.open("https://www.spensiones.cl/portal/compendio/596/w3-propertyvalue-3208.html","_blank");
+    });
 
+    document.getElementById("selectorRegion").addEventListener("change", e=>{
+      actualizarPanelClima(e.target.value);
+    });
+
+    actualizarHora();
     cargarSubtitulos(Object.values(perfilMap).flat());
   });
 </script>
