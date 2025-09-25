@@ -227,52 +227,6 @@
     padding-left: 1rem;
   }
 
-  #panelClima {
-    position: fixed;
-    bottom: 8%;
-    left: 12px;
-    background: rgba(255 255 255 / 0.9);
-    border-radius: 20px;
-    padding: 14px 22px;
-    box-shadow: 0 3px 18px #6a0dadaa;
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    color: #3a006f;
-    width: 270px;
-    z-index: 100;
-  }
-  #panelClima header {
-    font-weight: 700;
-    margin-bottom: 8px;
-    font-size: 1.15rem;
-    user-select:none;
-  }
-  #horaActual {
-    font-size: 1.5rem;
-    font-weight: 900;
-    margin-bottom: 10px;
-    letter-spacing: 1px;
-  }
-  #selectorRegion {
-    width: 100%;
-    margin-bottom: 12px;
-    padding: 8px 15px;
-    font-size: 1rem;
-    border-radius: 10px;
-    border: 2px solid #6a0dad;
-    background: #fafafa;
-    color: #3a006f;
-    cursor: pointer;
-  }
-  #climaInfo {
-    display: flex;
-    align-items: center;
-  }
-  #climaIcon {
-    width: 52px;
-    height: 52px;
-    margin-right: 16px;
-    filter: drop-shadow(0 0 5px #6a0dadbb);
-  }
 </style>
 </head>
 <body>
@@ -282,6 +236,7 @@
 </header>
 
 <div class="perfil-filter" id="perfilFilter" aria-label="Filtros por perfiles"></div>
+<div id="perfilSeleccionado" aria-live="polite">Seleccione un perfil</div>
 
 <div class="filters">
   <input type="search" id="searchInput" placeholder="Filtrar toda la guía..." aria-label="Filtro global de búsqueda" />
@@ -299,41 +254,6 @@
     <div class="accion-text" id="accionDisplay" tabindex="0" aria-live="polite"></div>
   </div>
 </main>
-
-<div id="panelClima" aria-label="Panel clima e información actual">
-  <header>Clima y Hora</header>
-  <div id="horaActual" aria-live="polite" aria-atomic="true">--:--:--</div>
-  <select id="selectorRegion" aria-label="Seleccionar región de Chile para ver clima">
-    <option value="" disabled selected>Seleccione región</option>
-    <option value="Arica">Arica</option>
-    <option value="Iquique">Iquique</option>
-    <option value="Antofagasta">Antofagasta</option>
-    <option value="Copiapo">Copiapó</option>
-    <option value="La Serena">La Serena</option>
-    <option value="Los Andes">Los Andes</option>
-    <option value="Viña del Mar">Viña del Mar</option>
-    <option value="Casa Matriz">Casa Matriz (Santiago)</option>
-    <option value="Rancagua">Rancagua</option>
-    <option value="Talca">Talca</option>
-    <option value="Chillan">Chillán</option>
-    <option value="Concepcion">Concepción</option>
-    <option value="Lo Angeles">Lo Angeles</option>
-    <option value="Temuco">Temuco</option>
-    <option value="Valdivia">Valdivia</option>
-    <option value="Osorno">Osorno</option>
-    <option value="Puerto Montt">Puerto Montt</option>
-    <option value="Chiloe">Chiloé</option>
-    <option value="Coyhaique">Coyhaique</option>
-    <option value="Punta Arenas">Punta Arenas</option>
-  </select>
-  <div id="climaInfo" aria-live="polite" role="region" style="margin-top:6px;">
-    <div id="climaIcon" aria-label="Icono clima" role="img" style="font-size:2.8rem;"></div>
-    <div>
-      <div id="climaTemp">-- °C</div>
-      <div id="climaText">Elija una región para ver el clima</div>
-    </div>
-  </div>
-</div>
 
 <script>
   const pasos = [
@@ -404,100 +324,99 @@
     return p;
   }
 
+  function limpiarSeleccion() {
+    const accionDisplay = document.getElementById("accionDisplay");
+    const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
+    accionDisplay.textContent = "";
+    subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
+  }
+
+  function cargarSubtitulos(arrayPerfiles) {
+    const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
+    const searchInput = document.getElementById("searchInput");
+    subtituloListUl.innerHTML = "";
+    if (!arrayPerfiles || arrayPerfiles.length === 0) return;
+
+    let subtitulosSet = new Set();
+    arrayPerfiles.forEach(po => {
+      pasos.filter(p => p.perfil === po).forEach(p => {
+        subtitulosSet.add(p.subtitulo);
+      });
+    });
+
+    let subtitulosArr = Array.from(subtitulosSet).sort();
+
+    const filtro = searchInput.value.trim().toLowerCase();
+
+    if (filtro) {
+      // Filtro global sin usar el perfil
+      subtitulosArr = subtitulosArr.filter(s =>{
+        return pasos.some(p => (p.subtitulo + p.accion).toLowerCase().includes(filtro));
+      });
+    }
+
+    if(subtitulosArr.length === 0){
+      subtituloListUl.innerHTML = '<li style="text-align:center;color:#6a0dad;">No hay tareas</li>';
+      document.getElementById("accionDisplay").textContent = "";
+      return;
+    }
+
+    subtitulosArr.forEach(subt => {
+      const li = document.createElement("li");
+      li.textContent = subt;
+      li.tabIndex = 0;
+      li.setAttribute("role", "button");
+      li.setAttribute("aria-pressed", "false");
+      li.onclick = () => seleccionarSubtitulo(subt, li, arrayPerfiles);
+      li.onkeydown = e => {
+        if(e.key === "Enter" || e.key === " "){
+          seleccionarSubtitulo(subt, li, arrayPerfiles);
+          e.preventDefault();
+        }
+      };
+      subtituloListUl.appendChild(li);
+    });
+    limpiarSeleccion();
+  }
+
+  function seleccionarSubtitulo(subtitulo, liElem, arrayPerfiles) {
+    const subtituloListUl = document.getElementById("subtituloList");
+    const accionDisplay = document.getElementById("accionDisplay");
+    subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
+    liElem.classList.add("selected");
+
+    let acciones = [];
+    if(arrayPerfiles && arrayPerfiles.length > 0){
+      arrayPerfiles.forEach(pf => {
+        acciones = acciones.concat(pasos.filter(p => p.perfil === pf && p.subtitulo === subtitulo)
+          .map(p => p.accion).filter(a => a && a.trim() !== ""));
+      });
+    } else {
+      acciones = pasos.filter(p => p.subtitulo === subtitulo)
+        .map(p => p.accion)
+        .filter(a => a && a.trim() !== "");
+    }
+    acciones = [...new Set(acciones)];
+    if(acciones.length === 0){
+      accionDisplay.textContent = "Sin acciones asociadas.";
+    } else {
+      accionDisplay.innerHTML = acciones.map(a => `• ${a}`).join("\n");
+    }
+    accionDisplay.focus();
+  }
+
   document.addEventListener("DOMContentLoaded", () => {
     const perfilFilterDiv = document.getElementById("perfilFilter");
-    const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
-    const accionDisplay = document.getElementById("accionDisplay");
-    const searchInput = document.getElementById("searchInput");
-    const btnReset = document.getElementById("btnReset");
-    const btnWebSearch = document.getElementById("btnWebSearch");
     const perfilSeleccionadoDiv = document.getElementById("perfilSeleccionado");
-
+    const searchInput = document.getElementById("searchInput");
     let perfilActual = null;
 
     const perfilMap = {};
     pasos.forEach(p => {
       const pUni = unificarPerfil(p.perfil);
-      if (!perfilMap[pUni]) perfilMap[pUni] = [];
-      if (!perfilMap[pUni].includes(p.perfil)) perfilMap[pUni].push(p.perfil);
+      if(!perfilMap[pUni]) perfilMap[pUni] = [];
+      if(!perfilMap[pUni].includes(p.perfil)) perfilMap[pUni].push(p.perfil);
     });
-
-    function limpiarSeleccion() {
-      accionDisplay.textContent = "";
-      subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
-    }
-
-    function cargarSubtitulos(arrayPerfiles) {
-      subtituloListUl.innerHTML = "";
-      if (!arrayPerfiles || arrayPerfiles.length === 0) return;
-
-      let subtitulosSet = new Set();
-      arrayPerfiles.forEach(po => {
-        pasos.filter(p => p.perfil === po).forEach(p => {
-          subtitulosSet.add(p.subtitulo);
-        });
-      });
-
-      let subtitulosArr = Array.from(subtitulosSet).sort();
-
-      const filtro = searchInput.value.trim().toLowerCase();
-
-      if (filtro) {
-        // Filtro global: buscar entre todos los subtitulos y acciones
-        subtitulosArr = subtitulosArr.filter(s => {
-          return pasos.some(p =>
-            (p.subtitulo + p.accion).toLowerCase().includes(filtro)
-          );
-        });
-      }
-
-      if (subtitulosArr.length === 0) {
-        subtituloListUl.innerHTML = '<li style="text-align:center;color:#6a0dad;">No hay tareas</li>';
-        accionDisplay.textContent = "";
-        return;
-      }
-
-      subtitulosArr.forEach(subt => {
-        const li = document.createElement("li");
-        li.textContent = subt;
-        li.tabIndex = 0;
-        li.setAttribute("role", "button");
-        li.setAttribute("aria-pressed", "false");
-        li.onclick = () => seleccionarSubtitulo(subt, li, arrayPerfiles);
-        li.onkeydown = e => {
-          if (e.key === "Enter" || e.key === " ") {
-            seleccionarSubtitulo(subt, li, arrayPerfiles);
-            e.preventDefault();
-          }
-        };
-        subtituloListUl.appendChild(li);
-      });
-      limpiarSeleccion();
-    }
-
-    function seleccionarSubtitulo(subtitulo, liElem, arrayPerfiles) {
-      subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
-      liElem.classList.add("selected");
-
-      let acciones = [];
-      if (perfilActual) {
-        arrayPerfiles.forEach(pf => {
-          acciones = acciones.concat(pasos.filter(p => p.perfil === pf && p.subtitulo === subtitulo)
-            .map(p => p.accion).filter(a => a && a.trim() !== ""));
-        });
-      } else {
-        acciones = pasos.filter(p => p.subtitulo === subtitulo)
-          .map(p => p.accion)
-          .filter(a => a && a.trim() !== "");
-      }
-      acciones = [...new Set(acciones)];
-      if (acciones.length === 0) {
-        accionDisplay.textContent = "Sin acciones asociadas.";
-      } else {
-        accionDisplay.innerHTML = acciones.map(a => `• ${a}`).join("\n");
-      }
-      accionDisplay.focus();
-    }
 
     Object.keys(perfilMap).forEach(perfUni => {
       const btn = document.createElement("button");
@@ -505,7 +424,7 @@
       btn.textContent = perfUni;
       btn.dataset.perfil = perfUni;
       btn.onclick = () => {
-        if (perfilActual === perfUni) {
+        if(perfilActual === perfUni){
           perfilActual = null;
           btn.classList.remove("active");
           perfilSeleccionadoDiv.textContent = "Seleccione un perfil";
@@ -527,20 +446,23 @@
       perfilActual = null;
       limpiarSeleccion();
       perfilSeleccionadoDiv.textContent = "Seleccione un perfil";
-      subtituloListUl.innerHTML = "";
-      accionDisplay.textContent = "";
+      document.getElementById("subtituloList").querySelector("ul").innerHTML = "";
+      document.getElementById("accionDisplay").textContent = "";
       searchInput.value = "";
       document.querySelectorAll(".perfil-btn").forEach(b => b.classList.remove("active"));
+      cargarSubtitulos(Object.values(perfilMap).flat());
     };
 
     searchInput.addEventListener("input", () => {
-      // Para filtro global buscar en todo sin filtrar por perfíl
       cargarSubtitulos(Object.values(perfilMap).flat());
     });
 
-    btnWebSearch.onclick = () => {
+    document.getElementById("btnWebSearch").onclick = () => {
       window.open("https://www.spensiones.cl/portal/compendio/596/w3-propertyvalue-3208.html", "_blank");
-    });
+    };
+
+    // Inicializamos mostrando todos los subtítulos sin perfil seleccionado
+    cargarSubtitulos(Object.values(perfilMap).flat());
   });
 </script>
 </body>
