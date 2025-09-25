@@ -70,12 +70,17 @@
     border: none;
     cursor: pointer;
     box-shadow: 0 4px 16px #3a006f77;
-    transition: transform 0.28s ease, box-shadow 0.28s ease;
+    transition: transform 0.28s ease, box-shadow 0.28s ease, background-color 0.3s ease;
     text-shadow: 1px 1px 10px #000000cc;
   }
-  .perfil-btn:hover, .perfil-btn.active {
+  .perfil-btn:hover {
     box-shadow: 0 8px 24px #6a0daddd;
     transform: scale(1.1);
+  }
+  .perfil-btn.active {
+    background-color: #52006b;
+    box-shadow: 0 10px 28px #6a0dadcc;
+    transform: scale(1.15);
   }
   .filters {
     max-width: 1100px;
@@ -292,22 +297,21 @@ document.addEventListener('DOMContentLoaded', () => {
     {perfil: "MÉDICO ASESOR", subtitulo: "FINALIZAR / GENERAR PDF", accion:""},
   ];
 
-  function unificarPerfil(perfil) {
-    const pf = perfil.toLowerCase();
+  function unificarPerfil(p) {
+    const pf = p.toLowerCase();
     if(pf.includes("medico presidente")) return "Médico Presidente";
     if(pf.includes("medico asignado")) return "Médico Asignado";
     if(pf.includes("medico interconsultor")) return "Médico Interconsultor";
     if(pf.includes("medico asesor")) return "Médico Asesor";
     if(pf.includes("medico designado")) return "Médico Designado";
     if(pf.includes("administrativo")) return "Administrativo";
-    return perfil;
+    return p;
   }
-
   const perfilMap = {};
   pasos.forEach(p => {
-    const pUni = unificarPerfil(p.perfil);
-    if(!perfilMap[pUni]) perfilMap[pUni] = [];
-    if(!perfilMap[pUni].includes(p.perfil)) perfilMap[pUni].push(p.perfil);
+    const pu = unificarPerfil(p.perfil);
+    if(!perfilMap[pu]) perfilMap[pu] = [];
+    if(!perfilMap[pu].includes(p.perfil)) perfilMap[pu].push(p.perfil);
   });
 
   const perfilFilterDiv = document.getElementById("perfilFilter");
@@ -324,13 +328,13 @@ document.addEventListener('DOMContentLoaded', () => {
     subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
   }
 
-  function cargarSubtitulos(perfiles) {
+  function cargarSubtitulos(arrayPerfiles) {
     subtituloListUl.innerHTML = "";
-    if(!perfiles || perfiles.length === 0) return;
+    if(!arrayPerfiles || arrayPerfiles.length === 0) return;
 
     let subtitulosSet = new Set();
-    perfiles.forEach(pO => {
-      pasos.filter(p => p.perfil === pO).forEach(p => {
+    arrayPerfiles.forEach(po => {
+      pasos.filter(p => p.perfil === po).forEach(p => {
         subtitulosSet.add(p.subtitulo);
       });
     });
@@ -340,10 +344,20 @@ document.addEventListener('DOMContentLoaded', () => {
     const filtro = searchInput.value.trim().toLowerCase();
     if(filtro) {
       subtitulosArr = subtitulosArr.filter(s => {
-        return perfiles.some(pO =>
-          pasos.some(p => p.perfil === pO && p.subtitulo === s && (p.subtitulo + p.accion).toLowerCase().includes(filtro))
+        return arrayPerfiles.some(po =>
+          pasos.some(p => p.perfil === po && p.subtitulo === s && (p.subtitulo + p.accion).toLowerCase().includes(filtro))
         );
       });
+    }
+    if(!perfilActual && filtro) {
+      // Sin perfil seleccionado: buscar global
+      let globalSet = new Set();
+      pasos.forEach(p => {
+        if( (p.subtitulo + p.accion).toLowerCase().includes(filtro) ) {
+          globalSet.add(p.subtitulo);
+        }
+      });
+      subtitulosArr = Array.from(globalSet).sort();
     }
 
     if(subtitulosArr.length === 0) {
@@ -352,16 +366,16 @@ document.addEventListener('DOMContentLoaded', () => {
       return;
     }
 
-    subtitulosArr.forEach(s => {
+    subtitulosArr.forEach(subt => {
       const li = document.createElement("li");
-      li.textContent = s;
-      li.tabIndex = 0;
-      li.setAttribute("role", "button");
-      li.setAttribute("aria-pressed", "false");
-      li.onclick = () => seleccionarSubtitulo(s, li, perfiles);
-      li.onkeydown = e => {
-        if(e.key === "Enter" || e.key === " ") {
-          seleccionarSubtitulo(s, li, perfiles);
+      li.textContent = subt;
+      li.tabIndex=0;
+      li.setAttribute("role","button");
+      li.setAttribute("aria-pressed","false");
+      li.onclick = () => seleccionarSubtitulo(subt, li, arrayPerfiles);
+      li.onkeydown = e=>{
+        if(e.key==="Enter" || e.key===" ") {
+          seleccionarSubtitulo(subt, li, arrayPerfiles);
           e.preventDefault();
         }
       };
@@ -371,40 +385,54 @@ document.addEventListener('DOMContentLoaded', () => {
     limpiarSeleccion();
   }
 
-  function seleccionarSubtitulo(subtitulo, liElem, perfiles) {
-    subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
+  function seleccionarSubtitulo(subtitulo, liElem, arrayPerfiles) {
+    subtituloListUl.querySelectorAll("li").forEach(li=>li.classList.remove("selected"));
     liElem.classList.add("selected");
 
     let acciones = [];
-    perfiles.forEach(pO => {
-      acciones = acciones.concat(
-        pasos.filter(p => p.perfil === pO && p.subtitulo === subtitulo)
-        .map(p => p.accion)
-        .filter(a => a && a.trim() !== "")
-      );
-    });
+    if(perfilActual) {
+      arrayPerfiles.forEach(pf => {
+        acciones = acciones.concat(
+          pasos.filter(p=>p.perfil === pf && p.subtitulo === subtitulo)
+          .map(p=>p.accion)
+          .filter(a=>a && a.trim()!=="")
+        );
+      });
+    } else {
+      // Si no hay perfil seleccionado, buscar globalmente
+      acciones = pasos.filter(p=> p.subtitulo === subtitulo).map(p=>p.accion).filter(a=>a && a.trim()!=="");
+    }
 
     acciones = [...new Set(acciones)];
 
     if(acciones.length === 0) {
       accionDisplay.textContent = "Sin acciones asociadas.";
     } else {
-      accionDisplay.innerHTML = acciones.map(a => `<p>• ${a}</p>`).join("");
+      accionDisplay.innerHTML = acciones.map(a=>`<p>• ${a}</p>`).join("");
     }
+
     accionDisplay.focus();
   }
 
-  Object.keys(perfilMap).forEach(pUni => {
+  Object.keys(perfilMap).forEach(perfUni => {
     const btn = document.createElement("button");
     btn.className = "perfil-btn";
-    btn.textContent = pUni;
-    btn.dataset.perfil = pUni;
+    btn.textContent = perfUni;
+    btn.dataset.perfil = perfUni;
     btn.onclick = () => {
-      perfilActual = pUni;
-      document.querySelectorAll(".perfil-btn").forEach(b =>
-        b.classList.toggle("active", b.dataset.perfil === pUni));
-      cargarSubtitulos(perfilMap[pUni]);
-      limpiarSeleccion();
+      if(perfilActual === perfUni) {
+        perfilActual = null;
+        btn.classList.remove("active");
+        cargarSubtitulos([]);
+        limpiarSeleccion();
+      }
+      else {
+        perfilActual = perfUni;
+        document.querySelectorAll(".perfil-btn").forEach(b=>b.classList.remove("active"));
+        btn.classList.add("active");
+        cargarSubtitulos(perfilMap[perfUni]);
+        limpiarSeleccion();
+      }
     };
     perfilFilterDiv.appendChild(btn);
   });
@@ -421,6 +449,8 @@ document.addEventListener('DOMContentLoaded', () => {
   searchInput.addEventListener("input", () => {
     if(perfilActual) {
       cargarSubtitulos(perfilMap[perfilActual]);
+    } else {
+      cargarSubtitulos([]);
     }
     limpiarSeleccion();
   });
