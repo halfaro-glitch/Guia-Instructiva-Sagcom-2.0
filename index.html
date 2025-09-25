@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Guía de pasos SAGCOM 2 - Clima Animado</title>
+<title>Guía de pasos SAGCOM 2 - Clima Animado Mejorado</title>
 <style>
   body::before {
     content: "";
@@ -55,8 +55,8 @@
 
   #panelClima {
     position: fixed;
-    bottom: 15px;
-    left: 15px;
+    bottom: 8%;
+    left: 12px;
     background: rgba(255 255 255 / 0.9);
     border-radius: 20px;
     padding: 14px 22px;
@@ -191,37 +191,35 @@
     display: flex;
     gap: 2rem;
     align-items: flex-start;
+    flex-direction: column;
   }
 
-  /* PERFIL 3D pequeño a la izquierda de tareas */
+  /* Perfil texto pequeño sobre tareas */
   .perfil-3d {
-    font-size: 1.15rem;
+    font-size: 1rem;
     color: #6a0dad;
     font-weight: 700;
     text-shadow: 2px 2px 7px #3a006faa;
     perspective: 900px;
     cursor: default;
-    margin: 0 12px 0 0;
     user-select: none;
-    height: 36px;
-    width: 160px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 16px;
+    margin: 0 auto 8px auto;
+    max-width: 300px;
+    padding: 4px 10px;
+    border-radius: 12px;
     background: linear-gradient(145deg, #fdf6ff, #bb9edc);
     box-shadow:
       0 6px 15px #7854ebaa,
       inset 0 -3px 8px #a095d1a1,
       inset 0 6px 6px #7b65c89a;
-    flex-shrink: 0;
+    text-align: center;
   }
 
   .subtitulo-container {
     border: 2px solid #6a0dad;
     border-radius: 16px;
     padding: 1rem 1.3rem;
-    width: 300px;
+    width: 100%;
     max-height: 600px;
     overflow-y: auto;
     background: #f2eeff;
@@ -276,27 +274,25 @@
     white-space: pre-line;
     padding-left: 1rem;
   }
-  @media (max-width: 900px) {
+  @media (min-width: 800px) {
     .content-container {
-      flex-direction: column;
-    }
-    .subtitulo-container,
-    .accion-container {
-      width: 100%;
-      max-height: none;
+      flex-direction: row;
     }
     .perfil-3d {
-      margin: 0 0 15px 0;
-      width: 100%;
-      height: auto;
-      font-size: 1.2rem;
-      box-shadow:none;
-      background:none;
-      text-align:center;
+      margin: 0 12px 0 0;
+      max-width: 180px;
+      padding: 8px 16px;
+      font-size: 1.15rem;
+      text-align: center;
+      height: 36px;
+      align-self: flex-start;
+    }
+    .subtitulo-container {
+      width: 280px;
     }
   }
 
-  /* Animaciones simples de iconos clima */
+  /* Animaciones iconos de clima */
 
   .icono-sun {
     animation: rotar 30s linear infinite;
@@ -367,7 +363,7 @@
     <option value="Punta Arenas">Punta Arenas</option>
   </select>
   <div id="climaInfo" aria-live="polite" role="region" style="margin-top:6px;">
-    <div id="climaIcon" aria-label="Icono clima" role="img" style="font-size:2.5rem;"></div>
+    <div id="climaIcon" aria-label="Icono clima" role="img" style="font-size:2.8rem;"></div>
     <div>
       <div id="climaTemp">-- °C</div>
       <div id="climaText">Elija una región para ver el clima</div>
@@ -385,14 +381,12 @@
 
 <main>
   <div class="content-container">
-    <section class="subtitulo-container" aria-label="Tareas de perfil seleccionado" style="display:flex; flex-direction:row;">
+    <section class="subtitulo-container" aria-label="Tareas de perfil seleccionado" style="margin:0;">
       <div class="perfil-3d" id="perfil3d" aria-live="polite">Seleccione un perfil</div>
-      <div style="flex-grow:1;">
-        <h3>Tareas</h3>
-        <nav class="subtitulo-list" id="subtituloList">
-          <ul></ul>
-        </nav>
-      </div>
+      <h3 style="margin-top: 8px;">Tareas</h3>
+      <nav class="subtitulo-list" id="subtituloList">
+        <ul></ul>
+      </nav>
     </section>
     <section class="accion-container" aria-label="Acción a realizar para subtitulo">
       <h3>Acción a realizar</h3>
@@ -430,15 +424,14 @@
       return;
     }
     const condicionesDemostrativas = [
-      { icon: "☀️", temp: 23, texto: "Soleado" },
-      { icon: "⛅", temp: 18, texto: "Parcialmente nublado" },
-      { icon: "🌧️", temp: 14, texto: "Lluvia ligera" },
-      { icon: "🌫️", temp: 12, texto: "Niebla" },
-      { icon: "☁️", temp: 15, texto: "Nublado" },
+      { icon: "☀️", temp: 23, texto: "Soleado", clase: "icono-sun" },
+      { icon: "⛅", temp: 18, texto: "Parcialmente nublado", clase: "icono-cloud" },
+      { icon: "🌧️", temp: 14, texto: "Lluvia ligera", clase: "icono-rain" },
+      { icon: "🌫️", temp: 12, texto: "Niebla", clase: "icono-cloud" },
+      { icon: "☁️", temp: 15, texto: "Nublado", clase: "icono-cloud" }
     ];
     const seleccion = condicionesDemostrativas[Math.floor(Math.random() * condicionesDemostrativas.length)];
-
-    climaIcon.className = iconosAnim[seleccion.icon] || "";
+    climaIcon.className = seleccion.clase;
     climaIcon.textContent = seleccion.icon;
     document.getElementById("climaTemp").textContent = `${seleccion.temp} °C`;
     document.getElementById("climaText").textContent = `${region}: ${seleccion.texto}`;
@@ -501,17 +494,17 @@
       { perfil: "MÉDICO ASESOR", subtitulo: "COMPLETAR IMPEDIMENTOS / AGREGAR", accion: "" },
       { perfil: "MÉDICO ASESOR", subtitulo: "COMPLETAR TRATAMIENTO / AGREGAR", accion: "" },
       { perfil: "MÉDICO ASESOR", subtitulo: "SOLICITUD INFUNDADA", accion: "SI, SI, SI , A LAS PREGUNTAS." },
-      { perfil: "MÉDICO ASESOR", subtitulo: "FINALIZAR / GENERAR PDF", accion: "" }
+      { perfil: "MÉDICO ASESOR", subtitulo: "FINALIZAR / GENERAR PDF", accion: "" },
     ];
 
     function unificarPerfil(perfil) {
-      const pf = perfil.toLowerCase();
-      if (pf.includes("medico presidente")) return "Médico Presidente";
-      if (pf.includes("medico asignado")) return "Médico Asignado";
-      if (pf.includes("medico interconsultor")) return "Médico Interconsultor";
-      if (pf.includes("medico asesor")) return "Médico Asesor";
-      if (pf.includes("medico designado")) return "Médico Designado";
-      if (pf.includes("administrativo")) return "Administrativo";
+      const pLower = perfil.toLowerCase();
+      if (pLower.includes("medico presidente")) return "Médico Presidente";
+      if (pLower.includes("medico asignado")) return "Médico Asignado";
+      if (pLower.includes("medico interconsultor")) return "Médico Interconsultor";
+      if (pLower.includes("medico asesor")) return "Médico Asesor";
+      if (pLower.includes("medico designado")) return "Médico Designado";
+      if (pLower.includes("administrativo")) return "Administrativo";
       return perfil;
     }
 
@@ -549,13 +542,12 @@
         climaText.textContent = "Elija una región para ver el clima";
         return;
       }
-      // Simulación de clima animado
       const condicionesDemostrativas = [
         { icon: "☀️", temp: 23, texto: "Soleado", clase: "icono-sun" },
         { icon: "⛅", temp: 18, texto: "Parcialmente nublado", clase: "icono-cloud" },
         { icon: "🌧️", temp: 14, texto: "Lluvia ligera", clase: "icono-rain" },
         { icon: "🌫️", temp: 12, texto: "Niebla", clase: "icono-cloud" },
-        { icon: "☁️", temp: 15, texto: "Nublado", clase: "icono-cloud" },
+        { icon: "☁️", temp: 15, texto: "Nublado", clase: "icono-cloud" }
       ];
       const seleccion = condicionesDemostrativas[Math.floor(Math.random() * condicionesDemostrativas.length)];
       climaIcon.className = seleccion.clase;
