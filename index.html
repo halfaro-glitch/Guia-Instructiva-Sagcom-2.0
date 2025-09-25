@@ -324,99 +324,98 @@
     return p;
   }
 
-  function limpiarSeleccion() {
-    const accionDisplay = document.getElementById("accionDisplay");
-    const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
-    accionDisplay.textContent = "";
-    subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
-  }
-
-  function cargarSubtitulos(arrayPerfiles) {
-    const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
-    const searchInput = document.getElementById("searchInput");
-    subtituloListUl.innerHTML = "";
-    if (!arrayPerfiles || arrayPerfiles.length === 0) return;
-
-    let subtitulosSet = new Set();
-    arrayPerfiles.forEach(po => {
-      pasos.filter(p => p.perfil === po).forEach(p => {
-        subtitulosSet.add(p.subtitulo);
-      });
-    });
-
-    let subtitulosArr = Array.from(subtitulosSet).sort();
-
-    const filtro = searchInput.value.trim().toLowerCase();
-
-    if (filtro) {
-      // Filtro global sin usar el perfil
-      subtitulosArr = subtitulosArr.filter(s =>{
-        return pasos.some(p => (p.subtitulo + p.accion).toLowerCase().includes(filtro));
-      });
-    }
-
-    if(subtitulosArr.length === 0){
-      subtituloListUl.innerHTML = '<li style="text-align:center;color:#6a0dad;">No hay tareas</li>';
-      document.getElementById("accionDisplay").textContent = "";
-      return;
-    }
-
-    subtitulosArr.forEach(subt => {
-      const li = document.createElement("li");
-      li.textContent = subt;
-      li.tabIndex = 0;
-      li.setAttribute("role", "button");
-      li.setAttribute("aria-pressed", "false");
-      li.onclick = () => seleccionarSubtitulo(subt, li, arrayPerfiles);
-      li.onkeydown = e => {
-        if(e.key === "Enter" || e.key === " "){
-          seleccionarSubtitulo(subt, li, arrayPerfiles);
-          e.preventDefault();
-        }
-      };
-      subtituloListUl.appendChild(li);
-    });
-    limpiarSeleccion();
-  }
-
-  function seleccionarSubtitulo(subtitulo, liElem, arrayPerfiles) {
-    const subtituloListUl = document.getElementById("subtituloList");
-    const accionDisplay = document.getElementById("accionDisplay");
-    subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
-    liElem.classList.add("selected");
-
-    let acciones = [];
-    if(arrayPerfiles && arrayPerfiles.length > 0){
-      arrayPerfiles.forEach(pf => {
-        acciones = acciones.concat(pasos.filter(p => p.perfil === pf && p.subtitulo === subtitulo)
-          .map(p => p.accion).filter(a => a && a.trim() !== ""));
-      });
-    } else {
-      acciones = pasos.filter(p => p.subtitulo === subtitulo)
-        .map(p => p.accion)
-        .filter(a => a && a.trim() !== "");
-    }
-    acciones = [...new Set(acciones)];
-    if(acciones.length === 0){
-      accionDisplay.textContent = "Sin acciones asociadas.";
-    } else {
-      accionDisplay.innerHTML = acciones.map(a => `• ${a}`).join("\n");
-    }
-    accionDisplay.focus();
-  }
-
   document.addEventListener("DOMContentLoaded", () => {
     const perfilFilterDiv = document.getElementById("perfilFilter");
-    const perfilSeleccionadoDiv = document.getElementById("perfilSeleccionado");
+    const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
+    const accionDisplay = document.getElementById("accionDisplay");
     const searchInput = document.getElementById("searchInput");
+    const btnReset = document.getElementById("btnReset");
+    const btnWebSearch = document.getElementById("btnWebSearch");
+    const perfilSeleccionadoDiv = document.getElementById("perfilSeleccionado");
+
     let perfilActual = null;
 
     const perfilMap = {};
     pasos.forEach(p => {
       const pUni = unificarPerfil(p.perfil);
-      if(!perfilMap[pUni]) perfilMap[pUni] = [];
-      if(!perfilMap[pUni].includes(p.perfil)) perfilMap[pUni].push(p.perfil);
+      if (!perfilMap[pUni]) perfilMap[pUni] = [];
+      if (!perfilMap[pUni].includes(p.perfil)) perfilMap[pUni].push(p.perfil);
     });
+
+    function limpiarSeleccion() {
+      accionDisplay.textContent = "";
+      subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
+    }
+
+    function cargarSubtitulos(arrayPerfiles) {
+      subtituloListUl.innerHTML = "";
+      if (!arrayPerfiles || arrayPerfiles.length === 0) return;
+
+      let subtitulosSet = new Set();
+      arrayPerfiles.forEach(po => {
+        pasos.filter(p => p.perfil === po).forEach(p => {
+          subtitulosSet.add(p.subtitulo);
+        });
+      });
+
+      let subtitulosArr = Array.from(subtitulosSet).sort();
+
+      const filtro = searchInput.value.trim().toLowerCase();
+
+      if (filtro) {
+        // Filtro global: buscar entre todos los subtitulos y acciones
+        subtitulosArr = subtitulosArr.filter(s => {
+          return pasos.some(p => (p.subtitulo + p.accion).toLowerCase().includes(filtro));
+        });
+      }
+
+      if (subtitulosArr.length === 0) {
+        subtituloListUl.innerHTML = '<li style="text-align:center;color:#6a0dad;">No hay tareas</li>';
+        accionDisplay.textContent = "";
+        return;
+      }
+
+      subtitulosArr.forEach(subt => {
+        const li = document.createElement("li");
+        li.textContent = subt;
+        li.tabIndex = 0;
+        li.setAttribute("role", "button");
+        li.setAttribute("aria-pressed", "false");
+        li.onclick = () => seleccionarSubtitulo(subt, li, arrayPerfiles);
+        li.onkeydown = e => {
+          if (e.key === "Enter" || e.key === " ") {
+            seleccionarSubtitulo(subt, li, arrayPerfiles);
+            e.preventDefault();
+          }
+        };
+        subtituloListUl.appendChild(li);
+      });
+      limpiarSeleccion();
+    }
+
+    function seleccionarSubtitulo(subtitulo, liElem, arrayPerfiles) {
+      subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
+      liElem.classList.add("selected");
+
+      let acciones = [];
+      if (perfilActual) {
+        arrayPerfiles.forEach(pf => {
+          acciones = acciones.concat(pasos.filter(p => p.perfil === pf && p.subtitulo === subtitulo)
+            .map(p => p.accion).filter(a => a && a.trim() !== ""));
+        });
+      } else {
+        acciones = pasos.filter(p => p.subtitulo === subtitulo)
+          .map(p => p.accion)
+          .filter(a => a && a.trim() !== "");
+      }
+      acciones = [...new Set(acciones)];
+      if (acciones.length === 0) {
+        accionDisplay.textContent = "Sin acciones asociadas.";
+      } else {
+        accionDisplay.innerHTML = acciones.map(a => `• ${a}`).join("\n");
+      }
+      accionDisplay.focus();
+    }
 
     Object.keys(perfilMap).forEach(perfUni => {
       const btn = document.createElement("button");
@@ -424,7 +423,7 @@
       btn.textContent = perfUni;
       btn.dataset.perfil = perfUni;
       btn.onclick = () => {
-        if(perfilActual === perfUni){
+        if (perfilActual === perfUni) {
           perfilActual = null;
           btn.classList.remove("active");
           perfilSeleccionadoDiv.textContent = "Seleccione un perfil";
@@ -446,8 +445,8 @@
       perfilActual = null;
       limpiarSeleccion();
       perfilSeleccionadoDiv.textContent = "Seleccione un perfil";
-      document.getElementById("subtituloList").querySelector("ul").innerHTML = "";
-      document.getElementById("accionDisplay").textContent = "";
+      subtituloListUl.innerHTML = "";
+      accionDisplay.textContent = "";
       searchInput.value = "";
       document.querySelectorAll(".perfil-btn").forEach(b => b.classList.remove("active"));
       cargarSubtitulos(Object.values(perfilMap).flat());
@@ -457,11 +456,11 @@
       cargarSubtitulos(Object.values(perfilMap).flat());
     });
 
-    document.getElementById("btnWebSearch").onclick = () => {
+    btnWebSearch.onclick = () => {
       window.open("https://www.spensiones.cl/portal/compendio/596/w3-propertyvalue-3208.html", "_blank");
     };
 
-    // Inicializamos mostrando todos los subtítulos sin perfil seleccionado
+    // Inicializar sin perfil seleccionado, mostrar todo
     cargarSubtitulos(Object.values(perfilMap).flat());
   });
 </script>
