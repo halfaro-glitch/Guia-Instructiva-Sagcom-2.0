@@ -133,7 +133,7 @@
 
   #perfilSeleccionado {
     position: absolute;
-    top: 140px; /* bajado para no tapar autor */
+    top: 140px;
     right: 12px;
     background: linear-gradient(145deg, #fdf6ff, #bb9edc);
     border-radius: 16px;
@@ -273,7 +273,7 @@
     padding-left: 1rem;
   }
 
-  /* Noticias nacionales e internacionales cuadro fijo derecha misma altura que clima*/
+  /* Noticias generales cuadro fijo derecha misma altura que clima*/
   #noticiasGlobales {
     position: fixed;
     bottom: 8%;
@@ -468,7 +468,6 @@
     "☁️": "icono-cloud"
   };
 
-  // Ejemplos noticias CNN o similares
   const noticiasGlobales = {
     "Arica": {
       titulo: "Arica impulsa el turismo sostenible con nuevas iniciativas",
@@ -635,56 +634,12 @@
     const btnWebSearch = document.getElementById("btnWebSearch");
     const perfilSeleccionadoDiv = document.getElementById("perfilSeleccionado");
     const selectorRegion = document.getElementById("selectorRegion");
-    const climaIcon = document.getElementById("climaIcon");
-    const climaTemp = document.getElementById("climaTemp");
-    const climaText = document.getElementById("climaText");
-    const noticiasGlobalesCont = document.getElementById("noticiasGlobales");
-    const noticiaImagen = document.getElementById("noticiaImagen");
-    const noticiaTexto = document.getElementById("noticiaTexto");
-    const noticiaLink = document.getElementById("noticiaLink");
 
     let perfilActual = null;
 
     function limpiarSeleccion() {
       accionDisplay.textContent = "";
       subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
-    }
-
-    function mostrarNoticia(region) {
-      const noticia = noticiasGlobales[region] || noticiasGlobales["default"];
-      noticiasGlobalesCont.querySelector("h4").textContent = noticia.titulo;
-      noticiaImagen.src = noticia.imagen;
-      noticiaImagen.alt = noticia.titulo;
-      noticiaTexto.textContent = noticia.texto;
-      noticiaLink.href = noticia.enlace;
-      noticiaLink.textContent = "Leer noticia";
-      noticiaLink.style.display = "inline";
-      noticiaImagen.style.display = "block";
-    }
-
-    function actualizarPanelClima(region) {
-      if(!region){
-        climaIcon.className = "";
-        climaIcon.textContent = "";
-        climaTemp.textContent = "-- °C";
-        climaText.textContent = "Elija una región para ver el clima";
-        mostrarNoticia(null);
-        return;
-      }
-      const condicionesDemostrativas = [
-        {icon:"☀️", temp:23, texto:"Soleado", clase:"icono-sun"},
-        {icon:"⛅", temp:18, texto:"Parcialmente nublado", clase:"icono-cloud"},
-        {icon:"🌧️", temp:14, texto:"Lluvia ligera", clase:"icono-rain"},
-        {icon:"🌫️", temp:12, texto:"Niebla", clase:"icono-cloud"},
-        {icon:"☁️", temp:15, texto:"Nublado", clase:"icono-cloud"}
-      ];
-      const seleccion = condicionesDemostrativas[Math.floor(Math.random()*condicionesDemostrativas.length)];
-      climaIcon.className = seleccion.clase;
-      climaIcon.textContent = seleccion.icon;
-      climaTemp.textContent = `${seleccion.temp} °C`;
-      climaText.textContent = `${region}: ${seleccion.texto}`;
-
-      mostrarNoticia(region);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -743,99 +698,99 @@
       });
     });
 
-  // Funciones adicionales para subtítulos y selección de subtítulo
+    // Funciones para subtítulos y selección
 
-  function cargarSubtitulos(arrayPerfiles) {
-    const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
-    const accionDisplay = document.getElementById("accionDisplay");
-    subtituloListUl.innerHTML = "";
-    if (!arrayPerfiles || arrayPerfiles.length === 0) return;
+    function cargarSubtitulos(arrayPerfiles) {
+      const subtituloListUl = document.getElementById("subtituloList").querySelector("ul");
+      const accionDisplay = document.getElementById("accionDisplay");
+      subtituloListUl.innerHTML = "";
+      if (!arrayPerfiles || arrayPerfiles.length === 0) return;
 
-    let subtitulosSet = new Set();
-    arrayPerfiles.forEach(po => {
-      pasos.filter(p => p.perfil === po).forEach(p => {
-        subtitulosSet.add(p.subtitulo);
+      let subtitulosSet = new Set();
+      arrayPerfiles.forEach(po => {
+        pasos.filter(p => p.perfil === po).forEach(p => {
+          subtitulosSet.add(p.subtitulo);
+        });
       });
-    });
 
-    let subtitulosArr = Array.from(subtitulosSet).sort();
-    const filtro = document.getElementById("searchInput").value.trim().toLowerCase();
-    if (filtro) {
-      subtitulosArr = subtitulosArr.filter((s) => {
-        return arrayPerfiles.some((po) =>
-          pasos.some(
-            (p) =>
-              p.perfil === po &&
-              p.subtitulo === s &&
-              (p.subtitulo + p.accion).toLowerCase().includes(filtro)
-          )
-        );
+      let subtitulosArr = Array.from(subtitulosSet).sort();
+      const filtro = document.getElementById("searchInput").value.trim().toLowerCase();
+      if (filtro) {
+        subtitulosArr = subtitulosArr.filter((s) => {
+          return arrayPerfiles.some((po) =>
+            pasos.some(
+              (p) =>
+                p.perfil === po &&
+                p.subtitulo === s &&
+                (p.subtitulo + p.accion).toLowerCase().includes(filtro)
+            )
+          );
+        });
+      }
+      if (!perfilActual && filtro) {
+        let globalSet = new Set();
+        pasos.forEach((p) => {
+          if ((p.subtitulo + p.accion).toLowerCase().includes(filtro)) {
+            globalSet.add(p.subtitulo);
+          }
+        });
+        subtitulosArr = Array.from(globalSet).sort();
+      }
+
+      if (subtitulosArr.length === 0) {
+        subtituloListUl.innerHTML = '<li style="text-align:center;color:#6a0dad;">No hay tareas</li>';
+        accionDisplay.textContent = "";
+        return;
+      }
+
+      subtitulosArr.forEach((subt) => {
+        const li = document.createElement("li");
+        li.textContent = subt;
+        li.tabIndex = 0;
+        li.setAttribute("role", "button");
+        li.setAttribute("aria-pressed", "false");
+        li.onclick = () => seleccionarSubtitulo(subt, li, arrayPerfiles);
+        li.onkeydown = (e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            seleccionarSubtitulo(subt, li, arrayPerfiles);
+            e.preventDefault();
+          }
+        };
+        subtituloListUl.appendChild(li);
       });
-    }
-    if (!perfilActual && filtro) {
-      let globalSet = new Set();
-      pasos.forEach((p) => {
-        if ((p.subtitulo + p.accion).toLowerCase().includes(filtro)) {
-          globalSet.add(p.subtitulo);
-        }
-      });
-      subtitulosArr = Array.from(globalSet).sort();
+      limpiarSeleccion();
     }
 
-    if (subtitulosArr.length === 0) {
-      subtituloListUl.innerHTML = '<li style="text-align:center;color:#6a0dad;">No hay tareas</li>';
-      accionDisplay.textContent = "";
-      return;
-    }
+    function seleccionarSubtitulo(subtitulo, liElem, arrayPerfiles) {
+      const subtituloListUl = document.getElementById("subtituloList");
+      const accionDisplay = document.getElementById("accionDisplay");
+      subtituloListUl.querySelectorAll("li").forEach((li) => li.classList.remove("selected"));
+      liElem.classList.add("selected");
 
-    subtitulosArr.forEach((subt) => {
-      const li = document.createElement("li");
-      li.textContent = subt;
-      li.tabIndex = 0;
-      li.setAttribute("role", "button");
-      li.setAttribute("aria-pressed", "false");
-      li.onclick = () => seleccionarSubtitulo(subt, li, arrayPerfiles);
-      li.onkeydown = (e) => {
-        if (e.key === "Enter" || e.key === " ") {
-          seleccionarSubtitulo(subt, li, arrayPerfiles);
-          e.preventDefault();
-        }
-      };
-      subtituloListUl.appendChild(li);
-    });
-    limpiarSeleccion();
-  }
-
-  function seleccionarSubtitulo(subtitulo, liElem, arrayPerfiles) {
-    const subtituloListUl = document.getElementById("subtituloList");
-    const accionDisplay = document.getElementById("accionDisplay");
-    subtituloListUl.querySelectorAll("li").forEach((li) => li.classList.remove("selected"));
-    liElem.classList.add("selected");
-
-    let acciones = [];
-    if (perfilActual) {
-      arrayPerfiles.forEach((perf) => {
-        acciones = acciones.concat(
-          pasos
-            .filter((p) => p.perfil === perf && p.subtitulo === subtitulo)
-            .map((p) => p.accion)
-            .filter((a) => a && a.trim() !== "")
-        );
-      });
-    } else {
-      acciones = pasos
-        .filter((p) => p.subtitulo === subtitulo)
-        .map((p) => p.accion)
-        .filter((a) => a && a.trim() !== "");
+      let acciones = [];
+      if (perfilActual) {
+        arrayPerfiles.forEach((perf) => {
+          acciones = acciones.concat(
+            pasos
+              .filter((p) => p.perfil === perf && p.subtitulo === subtitulo)
+              .map((p) => p.accion)
+              .filter((a) => a && a.trim() !== "")
+          );
+        });
+      } else {
+        acciones = pasos
+          .filter((p) => p.subtitulo === subtitulo)
+          .map((p) => p.accion)
+          .filter((a) => a && a.trim() !== "");
+      }
+      acciones = [...new Set(acciones)];
+      if (acciones.length === 0) {
+        accionDisplay.textContent = "Sin acciones asociadas.";
+      } else {
+        accionDisplay.innerHTML = acciones.map((a) => `• ${a}`).join("\n");
+      }
+      accionDisplay.focus();
     }
-    acciones = [...new Set(acciones)];
-    if (acciones.length === 0) {
-      accionDisplay.textContent = "Sin acciones asociadas.";
-    } else {
-      accionDisplay.innerHTML = acciones.map((a) => `• ${a}`).join("\n");
-    }
-    accionDisplay.focus();
-  }
 </script>
 </body>
 </html>
