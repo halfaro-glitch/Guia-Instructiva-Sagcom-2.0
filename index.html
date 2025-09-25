@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Guía de pasos SAGCOM 2 - Clima Animado Mejorado</title>
+<title>Guía de pasos SAGCOM 2 - Selector Perfil en derecha superior</title>
 <style>
   body::before {
     content: "";
@@ -105,7 +105,7 @@
     justify-content: center;
     gap: 1rem;
     flex-wrap: wrap;
-    margin: 1.5rem auto 0;
+    margin: 1.5rem auto 1rem;
     max-width: 1100px;
   }
   .perfil-btn {
@@ -129,6 +129,28 @@
     background-color: #52006b;
     box-shadow: 0 10px 28px #6a0dadcc;
     transform: scale(1.15);
+  }
+
+  /* Selector perfil a la derecha superior, más grande */
+  #perfilSeleccionado {
+    position: absolute;
+    top: 80px;
+    right: 12px;
+    background: linear-gradient(145deg, #fdf6ff, #bb9edc);
+    border-radius: 16px;
+    padding: 8px 18px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #6a0dad;
+    text-align: center;
+    box-shadow:
+      0 8px 20px #7854ebaa,
+      inset 0 -3px 10px #a095d1a1,
+      inset 0 6px 8px #7b65c89a;
+    user-select: none;
+    width: max-content;
+    max-width: 300px;
+    z-index: 101;
   }
 
   .filters {
@@ -186,40 +208,16 @@
     box-shadow: 0 2px 20px #3a006f2e;
     padding: 1rem 2rem;
   }
-
   .content-container {
     display: flex;
     gap: 2rem;
-    align-items: flex-start;
-    flex-direction: column;
+    flex-wrap: wrap;
   }
-
-  /* Perfil texto pequeño sobre tareas */
-  .perfil-3d {
-    font-size: 1rem;
-    color: #6a0dad;
-    font-weight: 700;
-    text-shadow: 2px 2px 7px #3a006faa;
-    perspective: 900px;
-    cursor: default;
-    user-select: none;
-    margin: 0 auto 8px auto;
-    max-width: 300px;
-    padding: 4px 10px;
-    border-radius: 12px;
-    background: linear-gradient(145deg, #fdf6ff, #bb9edc);
-    box-shadow:
-      0 6px 15px #7854ebaa,
-      inset 0 -3px 8px #a095d1a1,
-      inset 0 6px 6px #7b65c89a;
-    text-align: center;
-  }
-
   .subtitulo-container {
     border: 2px solid #6a0dad;
     border-radius: 16px;
     padding: 1rem 1.3rem;
-    width: 100%;
+    width: 300px;
     max-height: 600px;
     overflow-y: auto;
     background: #f2eeff;
@@ -263,6 +261,7 @@
     border: 2px solid #6a0dad;
     border-radius: 16px;
     padding: 1rem 1.3rem;
+    min-width: 460px;
   }
   .accion-container h3 {
     font-weight: 900;
@@ -274,26 +273,8 @@
     white-space: pre-line;
     padding-left: 1rem;
   }
-  @media (min-width: 800px) {
-    .content-container {
-      flex-direction: row;
-    }
-    .perfil-3d {
-      margin: 0 12px 0 0;
-      max-width: 180px;
-      padding: 8px 16px;
-      font-size: 1.15rem;
-      text-align: center;
-      height: 36px;
-      align-self: flex-start;
-    }
-    .subtitulo-container {
-      width: 280px;
-    }
-  }
 
   /* Animaciones iconos de clima */
-
   .icono-sun {
     animation: rotar 30s linear infinite;
   }
@@ -327,6 +308,23 @@
   @keyframes caerLluvia {
     0% {opacity: 1; transform: translateY(0);}
     100% {opacity: 0; transform: translateY(12px);}
+  }
+  @media (max-width: 900px) {
+    .content-container {
+      flex-direction: column;
+    }
+    .accion-container {
+      min-width: auto;
+      margin-top: 1rem;
+    }
+    #perfilSeleccionado {
+      position: static;
+      margin: 1rem auto;
+      max-width: 90%;
+      font-size: 1.1rem;
+      box-shadow: none;
+      background: linear-gradient(145deg, #fdf6ff, #bb9edc);
+    }
   }
 </style>
 </head>
@@ -379,11 +377,12 @@
   <button id="btnWebSearch" title="Buscar en sitio web oficial">Buscar en spensiones.cl</button>
 </div>
 
+<div id="perfilSeleccionado" aria-live="polite">Seleccione un perfil</div>
+
 <main>
   <div class="content-container">
-    <section class="subtitulo-container" aria-label="Tareas de perfil seleccionado" style="margin:0;">
-      <div class="perfil-3d" id="perfil3d" aria-live="polite">Seleccione un perfil</div>
-      <h3 style="margin-top: 8px;">Tareas</h3>
+    <section class="subtitulo-container" aria-label="Tareas de perfil seleccionado">
+      <h3>Tareas</h3>
       <nav class="subtitulo-list" id="subtituloList">
         <ul></ul>
       </nav>
@@ -494,25 +493,25 @@
       { perfil: "MÉDICO ASESOR", subtitulo: "COMPLETAR IMPEDIMENTOS / AGREGAR", accion: "" },
       { perfil: "MÉDICO ASESOR", subtitulo: "COMPLETAR TRATAMIENTO / AGREGAR", accion: "" },
       { perfil: "MÉDICO ASESOR", subtitulo: "SOLICITUD INFUNDADA", accion: "SI, SI, SI , A LAS PREGUNTAS." },
-      { perfil: "MÉDICO ASESOR", subtitulo: "FINALIZAR / GENERAR PDF", accion: "" },
+      { perfil: "MÉDICO ASESOR", subtitulo: "FINALIZAR / GENERAR PDF", accion: "" }
     ];
 
-    function unificarPerfil(perfil) {
-      const pLower = perfil.toLowerCase();
-      if (pLower.includes("medico presidente")) return "Médico Presidente";
-      if (pLower.includes("medico asignado")) return "Médico Asignado";
-      if (pLower.includes("medico interconsultor")) return "Médico Interconsultor";
-      if (pLower.includes("medico asesor")) return "Médico Asesor";
-      if (pLower.includes("medico designado")) return "Médico Designado";
-      if (pLower.includes("administrativo")) return "Administrativo";
-      return perfil;
+    function unificarPerfil(p) {
+      const pf = p.toLowerCase();
+      if(pf.includes("medico presidente")) return "Médico Presidente";
+      if(pf.includes("medico asignado")) return "Médico Asignado";
+      if(pf.includes("medico interconsultor")) return "Médico Interconsultor";
+      if(pf.includes("medico asesor")) return "Médico Asesor";
+      if(pf.includes("medico designado")) return "Médico Designado";
+      if(pf.includes("administrativo")) return "Administrativo";
+      return p;
     }
 
     const perfilMap = {};
-    pasos.forEach((p) => {
+    pasos.forEach(p => {
       const pUni = unificarPerfil(p.perfil);
-      if (!perfilMap[pUni]) perfilMap[pUni] = [];
-      if (!perfilMap[pUni].includes(p.perfil)) perfilMap[pUni].push(p.perfil);
+      if(!perfilMap[pUni]) perfilMap[pUni] = [];
+      if(!perfilMap[pUni].includes(p.perfil)) perfilMap[pUni].push(p.perfil);
     });
 
     const perfilFilterDiv = document.getElementById("perfilFilter");
@@ -521,7 +520,7 @@
     const searchInput = document.getElementById("searchInput");
     const btnReset = document.getElementById("btnReset");
     const btnWebSearch = document.getElementById("btnWebSearch");
-    const perfil3D = document.getElementById("perfil3d");
+    const perfilSeleccionadoDiv = document.getElementById("perfilSeleccionado");
     const selectorRegion = document.getElementById("selectorRegion");
     const climaIcon = document.getElementById("climaIcon");
     const climaTemp = document.getElementById("climaTemp");
@@ -531,11 +530,11 @@
 
     function limpiarSeleccion() {
       accionDisplay.textContent = "";
-      subtituloListUl.querySelectorAll("li").forEach((li) => li.classList.remove("selected"));
+      subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
     }
 
     function actualizarPanelClima(region) {
-      if (!region) {
+      if(!region) {
         climaIcon.className = "";
         climaIcon.textContent = "";
         climaTemp.textContent = "-- °C";
@@ -543,13 +542,13 @@
         return;
       }
       const condicionesDemostrativas = [
-        { icon: "☀️", temp: 23, texto: "Soleado", clase: "icono-sun" },
-        { icon: "⛅", temp: 18, texto: "Parcialmente nublado", clase: "icono-cloud" },
-        { icon: "🌧️", temp: 14, texto: "Lluvia ligera", clase: "icono-rain" },
-        { icon: "🌫️", temp: 12, texto: "Niebla", clase: "icono-cloud" },
-        { icon: "☁️", temp: 15, texto: "Nublado", clase: "icono-cloud" }
+        {icon:"☀️", temp:23, texto:"Soleado", clase:"icono-sun"},
+        {icon:"⛅", temp:18, texto:"Parcialmente nublado", clase:"icono-cloud"},
+        {icon:"🌧️", temp:14, texto:"Lluvia ligera", clase:"icono-rain"},
+        {icon:"🌫️", temp:12, texto:"Niebla", clase:"icono-cloud"},
+        {icon:"☁️", temp:15, texto:"Nublado", clase:"icono-cloud"}
       ];
-      const seleccion = condicionesDemostrativas[Math.floor(Math.random() * condicionesDemostrativas.length)];
+      const seleccion = condicionesDemostrativas[Math.floor(Math.random()*condicionesDemostrativas.length)];
       climaIcon.className = seleccion.clase;
       climaIcon.textContent = seleccion.icon;
       climaTemp.textContent = `${seleccion.temp} °C`;
@@ -558,11 +557,12 @@
 
     function cargarSubtitulos(arrayPerfiles) {
       subtituloListUl.innerHTML = "";
-      if (!arrayPerfiles || arrayPerfiles.length === 0) return;
+      if(!arrayPerfiles || arrayPerfiles.length === 0)
+        return;
 
       let subtitulosSet = new Set();
-      arrayPerfiles.forEach((po) => {
-        pasos.filter((p) => p.perfil === po).forEach((p) => {
+      arrayPerfiles.forEach(po => {
+        pasos.filter(p => p.perfil === po).forEach(p => {
           subtitulosSet.add(p.subtitulo);
         });
       });
@@ -570,43 +570,36 @@
       let subtitulosArr = Array.from(subtitulosSet).sort();
 
       const filtro = searchInput.value.trim().toLowerCase();
-      if (filtro) {
-        subtitulosArr = subtitulosArr.filter((s) => {
-          return arrayPerfiles.some((po) =>
-            pasos.some(
-              (p) =>
-                p.perfil === po &&
-                p.subtitulo === s &&
-                (p.subtitulo + p.accion).toLowerCase().includes(filtro)
-            )
-          );
+      if(filtro) {
+        subtitulosArr = subtitulosArr.filter(s => {
+          return arrayPerfiles.some(po =>
+            pasos.some(p => p.perfil === po && p.subtitulo === s &&
+              (p.subtitulo + p.accion).toLowerCase().includes(filtro)));
         });
       }
-      if (!perfilActual && filtro) {
+      if(!perfilActual && filtro) {
         let globalSet = new Set();
-        pasos.forEach((p) => {
-          if ((p.subtitulo + p.accion).toLowerCase().includes(filtro)) {
+        pasos.forEach(p => {
+          if((p.subtitulo + p.accion).toLowerCase().includes(filtro))
             globalSet.add(p.subtitulo);
-          }
         });
         subtitulosArr = Array.from(globalSet).sort();
       }
 
-      if (subtitulosArr.length === 0) {
+      if(subtitulosArr.length === 0) {
         subtituloListUl.innerHTML = '<li style="text-align:center;color:#6a0dad;">No hay tareas</li>';
         accionDisplay.textContent = "";
         return;
       }
-
-      subtitulosArr.forEach((subt) => {
+      subtitulosArr.forEach(subt => {
         const li = document.createElement("li");
         li.textContent = subt;
         li.tabIndex = 0;
         li.setAttribute("role", "button");
         li.setAttribute("aria-pressed", "false");
         li.onclick = () => seleccionarSubtitulo(subt, li, arrayPerfiles);
-        li.onkeydown = (e) => {
-          if (e.key === "Enter" || e.key === " ") {
+        li.onkeydown = e => {
+          if(e.key === "Enter" || e.key === " ") {
             seleccionarSubtitulo(subt, li, arrayPerfiles);
             e.preventDefault();
           }
@@ -617,53 +610,47 @@
     }
 
     function seleccionarSubtitulo(subtitulo, liElem, arrayPerfiles) {
-      subtituloListUl.querySelectorAll("li").forEach((li) => li.classList.remove("selected"));
+      subtituloListUl.querySelectorAll("li").forEach(li => li.classList.remove("selected"));
       liElem.classList.add("selected");
 
       let acciones = [];
-      if (perfilActual) {
-        arrayPerfiles.forEach((perf) => {
-          acciones = acciones.concat(
-            pasos
-              .filter((p) => p.perfil === perf && p.subtitulo === subtitulo)
-              .map((p) => p.accion)
-              .filter((a) => a && a.trim() !== "")
-          );
+      if(perfilActual) {
+        arrayPerfiles.forEach(pf => {
+          acciones = acciones.concat(pasos.filter(p => p.perfil === pf && p.subtitulo === subtitulo)
+              .map(p => p.accion).filter(a => a && a.trim() !== ""));
         });
       } else {
-        acciones = pasos
-          .filter((p) => p.subtitulo === subtitulo)
-          .map((p) => p.accion)
-          .filter((a) => a && a.trim() !== "");
+        acciones = pasos.filter(p => p.subtitulo === subtitulo).map(p => p.accion)
+            .filter(a => a && a.trim() !== "");
       }
       acciones = [...new Set(acciones)];
-      if (acciones.length === 0) {
+      if(acciones.length === 0) {
         accionDisplay.textContent = "Sin acciones asociadas.";
       } else {
-        accionDisplay.innerHTML = acciones.map((a) => `• ${a}`).join("\n");
+        accionDisplay.innerHTML = acciones.map(a=>`• ${a}`).join("\n");
       }
       accionDisplay.focus();
     }
 
     actualizarHora();
 
-    Object.keys(perfilMap).forEach((perfUni) => {
+    Object.keys(perfilMap).forEach(perfUni => {
       const btn = document.createElement("button");
       btn.className = "perfil-btn";
       btn.textContent = perfUni;
       btn.dataset.perfil = perfUni;
       btn.onclick = () => {
-        if (perfilActual === perfUni) {
+        if(perfilActual === perfUni) {
           perfilActual = null;
           btn.classList.remove("active");
-          perfil3D.textContent = "Seleccione un perfil";
+          perfilSeleccionadoDiv.textContent = "Seleccione un perfil";
           cargarSubtitulos([]);
           limpiarSeleccion();
         } else {
           perfilActual = perfUni;
-          document.querySelectorAll(".perfil-btn").forEach((b) => b.classList.remove("active"));
+          document.querySelectorAll(".perfil-btn").forEach(b => b.classList.remove("active"));
           btn.classList.add("active");
-          perfil3D.textContent = perfUni;
+          perfilSeleccionadoDiv.textContent = perfUni;
           cargarSubtitulos(perfilMap[perfUni]);
           limpiarSeleccion();
         }
@@ -674,19 +661,18 @@
     btnReset.onclick = () => {
       perfilActual = null;
       limpiarSeleccion();
-      perfil3D.textContent = "Seleccione un perfil";
+      perfilSeleccionadoDiv.textContent = "Seleccione un perfil";
       subtituloListUl.innerHTML = "";
       accionDisplay.textContent = "";
       searchInput.value = "";
-      document.querySelectorAll(".perfil-btn").forEach((b) => b.classList.remove("active"));
+      document.querySelectorAll(".perfil-btn").forEach(b => b.classList.remove("active"));
     };
 
     searchInput.addEventListener("input", () => {
-      if (perfilActual) {
+      if(perfilActual)
         cargarSubtitulos(perfilMap[perfilActual]);
-      } else {
+      else
         cargarSubtitulos([]);
-      }
       limpiarSeleccion();
     });
 
@@ -694,7 +680,7 @@
       window.open("https://www.spensiones.cl/portal/compendio/596/w3-propertyvalue-3208.html", "_blank");
     };
 
-    selectorRegion.addEventListener("change", (e) => {
+    selectorRegion.addEventListener("change", e => {
       actualizarPanelClima(e.target.value);
     });
   });
