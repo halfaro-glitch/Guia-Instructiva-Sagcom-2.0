@@ -53,45 +53,65 @@
     user-select: none;
   }
 
+  /* Clima panel ajustado para 3D y posición */
   #panelClima {
     position: fixed;
     bottom: 8%;
     left: 12px;
-    background: rgba(255 255 255 / 0.9);
+    background: rgba(255 255 255 / 0.95);
     border-radius: 20px;
-    padding: 14px 22px;
-    box-shadow: 0 3px 18px #6a0dadaa;
+    padding: 18px 24px;
+    box-shadow:
+      0 10px 15px rgba(0,0,0,0.2),
+      0 4px 6px rgba(0,0,0,0.15);
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     color: #3a006f;
     width: 270px;
     z-index: 100;
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    transition: transform 0.3s ease;
+  }
+  #panelClima:hover {
+    transform: rotateY(15deg) rotateX(5deg) translateZ(30px);
+    box-shadow:
+      0 20px 30px rgba(0,0,0,0.3),
+      0 10px 15px rgba(0,0,0,0.25);
   }
   #panelClima header {
     font-weight: 700;
-    margin-bottom: 8px;
-    font-size: 1.15rem;
+    margin-bottom: 12px;
+    font-size: 1.2rem;
     user-select:none;
+    text-align: center;
   }
   #horaActual {
-    font-size: 1.5rem;
+    font-size: 1.7rem;
     font-weight: 900;
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     letter-spacing: 1px;
+    text-align: center;
   }
   #selectorRegion {
     width: 100%;
-    margin-bottom: 12px;
-    padding: 8px 15px;
-    font-size: 1rem;
-    border-radius: 10px;
+    margin-bottom: 16px;
+    padding: 10px 18px;
+    font-size: 1.1rem;
+    border-radius: 14px;
     border: 2px solid #6a0dad;
     background: #fafafa;
     color: #3a006f;
     cursor: pointer;
+    transition: box-shadow 0.3s ease;
+  }
+  #selectorRegion:focus {
+    outline: none;
+    box-shadow: 0 0 10px #6a0dadaa;
   }
   #climaInfo {
     display: flex;
     align-items: center;
+    justify-content: center;
   }
   #climaIcon {
     width: 52px;
@@ -368,76 +388,194 @@
 </main>
 
 <script>
-const iconosAnim = {
-  "☀️": "icono-sun",
-  "⛅": "icono-cloud",
-  "🌧️": "icono-rain",
-  "🌫️": "icono-cloud",
-  "☁️": "icono-cloud"
-};
+  // Animaciones iconos clima
+  const iconosAnim = {
+    "☀️": "icono-sun",
+    "⛅": "icono-cloud",
+    "🌧️": "icono-rain",
+    "🌫️": "icono-cloud",
+    "☁️": "icono-cloud"
+  };
 
-const climaEstados = [
-  { icon:"☀️", temp:23, texto:"Soleado", clase:"icono-sun" },
-  { icon:"⛅", temp:18, texto:"Parcialmente nublado", clase:"icono-cloud" },
-  { icon:"🌧️", temp:14, texto:"Lluvia ligera", clase:"icono-rain" },
-  { icon:"🌫️", temp:12, texto:"Niebla", clase:"icono-cloud" },
-  { icon:"☁️", temp:15, texto:"Nublado", clase:"icono-cloud" }
-];
+  // Estados clima simulados
+  const climaEstados = [
+    { icon:"☀️", temp:23, texto:"Soleado", clase:"icono-sun" },
+    { icon:"⛅", temp:18, texto:"Parcialmente nublado", clase:"icono-cloud" },
+    { icon:"🌧️", temp:14, texto:"Lluvia ligera", clase:"icono-rain" },
+    { icon:"🌫️", temp:12, texto:"Niebla", clase:"icono-cloud" },
+    { icon:"☁️", temp:15, texto:"Nublado", clase:"icono-cloud" }
+  ];
 
-function actualizarHora() {
-  const divHora = document.getElementById("horaActual");
-  setInterval(() => {
-    const ahora = new Date();
-    const h = String(ahora.getHours()).padStart(2,"0");
-    const m = String(ahora.getMinutes()).padStart(2,"0");
-    const s = String(ahora.getSeconds()).padStart(2,"0");
-    divHora.textContent = `${h}:${m}:${s}`;
-  }, 1000);
-}
-
-function actualizarPanelClima(region){
-  const climaIcon = document.getElementById("climaIcon");
-  const climaTemp = document.getElementById("climaTemp");
-  const climaText = document.getElementById("climaText");
-
-  if(!region){
-    climaIcon.className = "";
-    climaIcon.textContent = "";
-    climaTemp.textContent = "-- °C";
-    climaText.textContent = "Elija una región para ver el clima";
-    return;
+  // Actualiza hora cada segundo
+  function actualizarHora() {
+    const divHora = document.getElementById("horaActual");
+    setInterval(() => {
+      const ahora = new Date();
+      const h = String(ahora.getHours()).padStart(2,"0");
+      const m = String(ahora.getMinutes()).padStart(2,"0");
+      const s = String(ahora.getSeconds()).padStart(2,"0");
+      divHora.textContent = `${h}:${m}:${s}`;
+    }, 1000);
   }
-  const estado = climaEstados[Math.floor(Math.random()*climaEstados.length)];
-  climaIcon.className = estado.clase;
-  climaIcon.textContent = estado.icon;
-  climaTemp.textContent = `${estado.temp} °C`;
-  climaText.textContent = `${region}: ${estado.texto}`;
-}
-  // resto del código de segmentación, filtro y botones igual que antes
 
-// Aquí empieza el código para segmentaciones, filtro, y acciones...
-document.addEventListener("DOMContentLoaded",()=>{
-  actualizarHora();
+  // Actualiza el panel clima según región elegida
+  function actualizarPanelClima(region){
+    const climaIcon = document.getElementById("climaIcon");
+    const climaTemp = document.getElementById("climaTemp");
+    const climaText = document.getElementById("climaText");
 
-  // Array pasos igual que antes (omito aquí para brevedad)
-  const pasos = [ ... ]; // usa tu mismo arreglo completo
+    if(!region){
+      climaIcon.className = "";
+      climaIcon.textContent = "";
+      climaTemp.textContent = "-- °C";
+      climaText.textContent = "Elija una región para ver el clima";
+      return;
+    }
+    const estado = climaEstados[Math.floor(Math.random()*climaEstados.length)];
+    climaIcon.className = estado.clase;
+    climaIcon.textContent = estado.icon;
+    climaTemp.textContent = `${estado.temp} °C`;
+    climaText.textContent = `${region}: ${estado.texto}`;
+  }
 
-  // Funciones unificar perfil, limpiar, cargarSubtitulos y seleccionarSubtitulo iguales que antes
-  // Implementación resumida:
+  // Aquí empieza el código para segmentaciones, filtro, y acciones...
+  document.addEventListener("DOMContentLoaded",()=>{
+    actualizarHora();
 
-  // ... código segmentación y filtro igual que antes ...
+    // Para ejemplo, estructura mínima
+    const pasos = [
+      { perfil: "Perfil A", subtitulo: "Inicio", accion: "Realiza el paso inicial para el Perfil A.", segmento: "Segmento 1", inicial: "A" },
+      { perfil: "Perfil A", subtitulo: "Verificación", accion: "Confirma datos y validaciones.", segmento: "Segmento 1", inicial: "A" },
+      { perfil: "Perfil B", subtitulo: "Inicio", accion: "Realiza el paso inicial para el Perfil B.", segmento: "Segmento 2", inicial: "B" },
+      { perfil: "Perfil C", subtitulo: "Análisis", accion: "Ejecuta el análisis correspondiente.", segmento: "Segmento 3", inicial: "C" }
+    ];
 
-  // Añade aquí la implementación completa que ya tienes para esa parte...
+    // Variables para estado
+    let perfilActivo = null;
+    let subtituloActivo = null;
 
-  // Event listener de selector de región para actualizar clima
-  document.getElementById("selectorRegion").addEventListener("change", e=>{
-    actualizarPanelClima(e.target.value);
+    // Carga filtros de perfiles en la barra
+    const perfilFilter = document.getElementById("perfilFilter");
+    function cargarFiltros() {
+      const perfilesUnicos = [...new Set(pasos.map(p => p.perfil))];
+      perfilFilter.innerHTML = "";
+      perfilesUnicos.forEach(perfil => {
+        const btn = document.createElement("button");
+        btn.textContent = perfil;
+        btn.classList.add("perfil-btn");
+        btn.setAttribute("aria-pressed", "false");
+        btn.addEventListener("click", () => {
+          perfilActivo = perfil;
+          cargarSubtitulos();
+          actualizarPerfilSeleccionado();
+          limpiarSeleccion();
+        });
+        perfilFilter.appendChild(btn);
+      });
+    }
+
+    // Actualiza texto de perfil seleccionado
+    const perfilSeleccionado = document.getElementById("perfilSeleccionado");
+    function actualizarPerfilSeleccionado() {
+      perfilSeleccionado.textContent = perfilActivo ? `Perfil: ${perfilActivo}` : "Seleccione un perfil";
+      [...perfilFilter.children].forEach(btn => {
+        btn.classList.toggle("active", btn.textContent === perfilActivo);
+        btn.setAttribute("aria-pressed", btn.textContent === perfilActivo ? "true" : "false");
+      });
+    }
+
+    // Carga subtitulos para perfil activo
+    const subtituloList = document.getElementById("subtituloList").querySelector("ul");
+    function cargarSubtitulos() {
+      subtituloList.innerHTML = "";
+      if (!perfilActivo) return;
+      const subtitulos = pasos.filter(p => p.perfil === perfilActivo);
+      subtitulos.forEach(sub => {
+        const li = document.createElement("li");
+        li.textContent = `${sub.inicial} - ${sub.subtitulo}`;
+        li.tabIndex = 0;
+        li.addEventListener("click", () => {
+          subtituloActivo = sub;
+          mostrarAccion();
+          destacarSeleccion(li);
+        });
+        li.addEventListener("keypress", e => {
+          if (e.key === "Enter" || e.key === " ") {
+            subtituloActivo = sub;
+            mostrarAccion();
+            destacarSeleccion(li);
+          }
+        });
+        subtituloList.appendChild(li);
+      });
+    }
+
+    // Destaca selección en lista
+    function destacarSeleccion(elemento) {
+      [...subtituloList.children].forEach(li => li.classList.remove("selected"));
+      elemento.classList.add("selected");
+    }
+
+    // Muestra acción del subtitulo seleccionado
+    function mostrarAccion() {
+      const accionDisplay = document.getElementById("accionDisplay");
+      accionDisplay.textContent = subtituloActivo ? subtituloActivo.accion : "";
+      accionDisplay.focus();
+    }
+
+    // Limpia selección y acción
+    function limpiarSeleccion() {
+      subtituloActivo = null;
+      const accionDisplay = document.getElementById("accionDisplay");
+      accionDisplay.textContent = "";
+      [...subtituloList.children].forEach(li => li.classList.remove("selected"));
+    }
+
+    // Filtrado global con input y reset
+    const searchInput = document.getElementById("searchInput");
+    const btnReset = document.getElementById("btnReset");
+    searchInput.addEventListener("input", () => {
+      const query = searchInput.value.trim().toLowerCase();
+      if (!perfilActivo) return;
+      subtituloList.innerHTML = "";
+      pasos.filter(p => p.perfil === perfilActivo && (p.subtitulo.toLowerCase().includes(query) || p.accion.toLowerCase().includes(query)))
+        .forEach(sub => {
+          const li = document.createElement("li");
+          li.textContent = `${sub.inicial} - ${sub.subtitulo}`;
+          li.tabIndex = 0;
+          li.addEventListener("click", () => {
+            subtituloActivo = sub;
+            mostrarAccion();
+            destacarSeleccion(li);
+          });
+          li.addEventListener("keypress", e => {
+            if (e.key === "Enter" || e.key === " ") {
+              subtituloActivo = sub;
+              mostrarAccion();
+              destacarSeleccion(li);
+            }
+          });
+          subtituloList.appendChild(li);
+        });
+      limpiarSeleccion();
+    });
+    btnReset.addEventListener("click", () => {
+      searchInput.value = "";
+      limpiarSeleccion();
+      cargarSubtitulos();
+    });
+
+    // Botón para búsqueda en web oficial
+    const btnWebSearch = document.getElementById("btnWebSearch");
+    btnWebSearch.addEventListener("click", () => {
+      if (!perfilActivo) return;
+      const url = `https://suspensiones.cl/buscar?perfil=${encodeURIComponent(perfilActivo)}`;
+      window.open(url, "_blank");
+    });
+
+    // Inicialización
+    cargarFiltros();
   });
-
-  // Botón reset, búsqueda, segmentación, filtro y carga inicial
-
-  // ...
-});
 </script>
 </body>
 </html>
