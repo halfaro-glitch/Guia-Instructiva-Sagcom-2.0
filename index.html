@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Guía SAGCOM 2 - Clima, Segmentos y Filtro Global</title>
 <style>
+  /* Estilos base y de fondo */
   body::before {
     content: "";
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -31,6 +32,7 @@
     color: #222;
     position: relative; z-index: 0;
   }
+  /* Header */
   header {
     background: linear-gradient(145deg, #3a006f 0%, #6a0dad 60%, #fff 100%);
     color: white;
@@ -53,7 +55,7 @@
     user-select: none;
   }
 
-  /* Clima panel ajustado para 3D y posición */
+  /* Panel Clima 3D al costado inferior izquierdo */
   #panelClima {
     position: fixed;
     bottom: 8%;
@@ -155,7 +157,8 @@
     0% {opacity: 1; transform: translateY(0);}
     100% {opacity: 0; transform: translateY(12px);}
   }
-  /* Resto de estilos, perfiles y filtros */
+
+  /* Estilos perfiles, filtros y listas */
   .perfil-filter {
     display: flex;
     justify-content: center;
@@ -252,6 +255,8 @@
   #btnWebSearch:hover {
     background-color: #245ea7;
   }
+
+  /* Contenedor principal para subtítulos y acciones */
   main {
     max-width: 1100px;
     margin: 0 auto 3rem;
@@ -266,7 +271,7 @@
     border: 2px solid #6a0dad;
     border-radius: 16px;
     padding: 1rem 1.3rem;
-    width: 300px;
+    width: 350px;
     max-height: 600px;
     overflow-y: auto;
     background: #f2eeff;
@@ -388,7 +393,6 @@
 </main>
 
 <script>
-  // Animaciones iconos clima
   const iconosAnim = {
     "☀️": "icono-sun",
     "⛅": "icono-cloud",
@@ -397,7 +401,6 @@
     "☁️": "icono-cloud"
   };
 
-  // Estados clima simulados
   const climaEstados = [
     { icon:"☀️", temp:23, texto:"Soleado", clase:"icono-sun" },
     { icon:"⛅", temp:18, texto:"Parcialmente nublado", clase:"icono-cloud" },
@@ -406,7 +409,6 @@
     { icon:"☁️", temp:15, texto:"Nublado", clase:"icono-cloud" }
   ];
 
-  // Actualiza hora cada segundo
   function actualizarHora() {
     const divHora = document.getElementById("horaActual");
     setInterval(() => {
@@ -418,7 +420,6 @@
     }, 1000);
   }
 
-  // Actualiza el panel clima según región elegida
   function actualizarPanelClima(region){
     const climaIcon = document.getElementById("climaIcon");
     const climaTemp = document.getElementById("climaTemp");
@@ -438,24 +439,31 @@
     climaText.textContent = `${region}: ${estado.texto}`;
   }
 
-  // Aquí empieza el código para segmentaciones, filtro, y acciones...
   document.addEventListener("DOMContentLoaded",()=>{
     actualizarHora();
 
-    // Para ejemplo, estructura mínima
+    // Uso el listado real que me diste, aquí un ejemplo reducido para brevedad
+    // Agrega más elementos como necesario manteniendo esta estructura para cada perfil, subtitulo y acción.
     const pasos = [
-      { perfil: "Perfil A", subtitulo: "Inicio", accion: "Realiza el paso inicial para el Perfil A.", segmento: "Segmento 1", inicial: "A" },
-      { perfil: "Perfil A", subtitulo: "Verificación", accion: "Confirma datos y validaciones.", segmento: "Segmento 1", inicial: "A" },
-      { perfil: "Perfil B", subtitulo: "Inicio", accion: "Realiza el paso inicial para el Perfil B.", segmento: "Segmento 2", inicial: "B" },
-      { perfil: "Perfil C", subtitulo: "Análisis", accion: "Ejecuta el análisis correspondiente.", segmento: "Segmento 3", inicial: "C" }
+      { perfil: "ADMINISTRATIVO", subtitulo: "ANALISIS DE ADMISIBILIDAD", accion: "VER + / REGULAR / BUSCAR RUT / VER +", inicial: "A" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "ADMISIBILIDAD DE LA SOLICITUD", accion: "ACEPTAR / CONFIRMAR", inicial: "A" },
+      { perfil: "MÉDICO PRESIDENTE", subtitulo: "ASIGNAR MEDICO", accion: "REGULAR / BUSCAR RUT", inicial: "M" },
+      { perfil: "MÉDICO PRESIDENTE", subtitulo: "ACCIONES", accion: "AUTOASIGNAR Y/O MODIFICAR", inicial: "M" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "INICIO / CITACIONES", accion:"VER + / REGULAR / BUSCAR RUT", inicial: "A" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "MIS EXPEDIENTES", accion: "EVALUACIÓN MÉDICA", inicial: "M" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "ORDENES DE ATENCIÓN POR GESTIONAR", accion:"VER + /  REGULAR / BUSCAR RUT", inicial: "A" }
+      // Puedes continuar agregando todos tus perfiles, tareas y acciones que necesites
     ];
 
-    // Variables para estado
     let perfilActivo = null;
     let subtituloActivo = null;
 
-    // Carga filtros de perfiles en la barra
     const perfilFilter = document.getElementById("perfilFilter");
+    const perfilSeleccionado = document.getElementById("perfilSeleccionado");
+    const subtituloList = document.getElementById("subtituloList").querySelector("ul");
+    const accionDisplay = document.getElementById("accionDisplay");
+
+    // Carga botones de perfil
     function cargarFiltros() {
       const perfilesUnicos = [...new Set(pasos.map(p => p.perfil))];
       perfilFilter.innerHTML = "";
@@ -474,8 +482,6 @@
       });
     }
 
-    // Actualiza texto de perfil seleccionado
-    const perfilSeleccionado = document.getElementById("perfilSeleccionado");
     function actualizarPerfilSeleccionado() {
       perfilSeleccionado.textContent = perfilActivo ? `Perfil: ${perfilActivo}` : "Seleccione un perfil";
       [...perfilFilter.children].forEach(btn => {
@@ -484,8 +490,7 @@
       });
     }
 
-    // Carga subtitulos para perfil activo
-    const subtituloList = document.getElementById("subtituloList").querySelector("ul");
+    // Carga subtítulos de perfil activo
     function cargarSubtitulos() {
       subtituloList.innerHTML = "";
       if (!perfilActivo) return;
@@ -510,28 +515,23 @@
       });
     }
 
-    // Destaca selección en lista
     function destacarSeleccion(elemento) {
       [...subtituloList.children].forEach(li => li.classList.remove("selected"));
       elemento.classList.add("selected");
     }
 
-    // Muestra acción del subtitulo seleccionado
     function mostrarAccion() {
-      const accionDisplay = document.getElementById("accionDisplay");
       accionDisplay.textContent = subtituloActivo ? subtituloActivo.accion : "";
       accionDisplay.focus();
     }
 
-    // Limpia selección y acción
     function limpiarSeleccion() {
       subtituloActivo = null;
-      const accionDisplay = document.getElementById("accionDisplay");
       accionDisplay.textContent = "";
       [...subtituloList.children].forEach(li => li.classList.remove("selected"));
     }
 
-    // Filtrado global con input y reset
+    // Filtro global
     const searchInput = document.getElementById("searchInput");
     const btnReset = document.getElementById("btnReset");
     searchInput.addEventListener("input", () => {
@@ -569,7 +569,7 @@
     const btnWebSearch = document.getElementById("btnWebSearch");
     btnWebSearch.addEventListener("click", () => {
       if (!perfilActivo) return;
-      const url = `https://suspensiones.cl/buscar?perfil=${encodeURIComponent(perfilActivo)}`;
+      const url = `https://www.spensiones.cl/portal/compendio/596/w3-propertyvalue-3208.html`;
       window.open(url, "_blank");
     });
 
