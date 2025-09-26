@@ -2,12 +2,13 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
 <title>Guía SAGCOM 2 - Completo</title>
 <style>
   body::before {
     content: "";
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
     background: url('https://raw.githubusercontent.com/halfaro-glitch/Guia-Instructiva-Sagcom-2.0/refs/heads/main/imagen.avif') no-repeat center center fixed;
     background-size: contain;
     filter: brightness(0.95);
@@ -15,7 +16,8 @@
   }
   body::after {
     content: "";
-    position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
     background: linear-gradient(135deg,
       rgba(255,255,255,0.15) 10%,
       rgba(255,255,255,0.45) 30%,
@@ -29,7 +31,8 @@
     margin: 0; padding: 0;
     background-color: #fff;
     color: #222;
-    position: relative; z-index: 0;
+    position: relative;
+    z-index: 0;
   }
   header {
     background: linear-gradient(145deg, #3a006f 0%, #6a0dad 60%, #fff 100%);
@@ -52,17 +55,16 @@
     font-size: 1.1rem;
     user-select: none;
   }
+  /* Panel Clima reducido */
   #panelClima {
     position: fixed;
-    bottom: 8%;
+    bottom: 6%;
     left: 12px;
-    width: 220px;
+    width: 120px;
     background: rgba(255 255 255 / 0.95);
     border-radius: 20px;
-    padding: 8px 12px;
-    box-shadow:
-      0 10px 15px rgba(0,0,0,0.2),
-      0 4px 6px rgba(0,0,0,0.15);
+    padding: 6px 8px;
+    box-shadow: 0 6px 10px rgba(0,0,0,0.15);
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     color: #3a006f;
     z-index: 100;
@@ -71,30 +73,28 @@
     transition: transform 0.3s ease;
   }
   #panelClima:hover {
-    transform: rotateY(15deg) rotateX(5deg) translateZ(30px);
-    box-shadow:
-      0 20px 30px rgba(0,0,0,0.3),
-      0 10px 15px rgba(0,0,0,0.25);
+    transform: rotateY(10deg) rotateX(5deg) translateZ(15px);
+    box-shadow: 0 15px 20px rgba(0,0,0,0.25);
   }
   #panelClima header {
     font-weight: 700;
-    font-size: 1.1rem;
-    margin-bottom: 6px;
+    font-size: 1rem;
+    margin-bottom: 4px;
     text-align: center;
     user-select: none;
   }
   #horaActual {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-weight: 900;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
     letter-spacing: 1px;
     text-align: center;
   }
   #selectorRegion {
     width: 100%;
-    margin-bottom: 10px;
-    padding: 6px 10px;
-    font-size: 1rem;
+    margin-bottom: 8px;
+    padding: 4px 8px;
+    font-size: 0.85rem;
     border-radius: 12px;
     border: 2px solid #6a0dad;
     background: #fafafa;
@@ -104,7 +104,7 @@
   }
   #selectorRegion:focus {
     outline: none;
-    box-shadow: 0 0 10px #6a0dadaa;
+    box-shadow: 0 0 8px #6a0dadaa;
   }
   #climaInfo {
     display: flex;
@@ -113,23 +113,47 @@
     gap: 6px;
   }
   #climaIcon {
-    width: 42px;
-    height: 42px;
+    width: 32px;
+    height: 32px;
   }
   #climaIcon img {
-    width: 42px;
-    height: 42px;
+    width: 32px;
+    height: 32px;
   }
   #climaTemp {
-    font-size: 1.2rem;
+    font-size: 1rem;
     font-weight: 700;
     color: #3a006f;
   }
   #climaText {
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: #6a0dad;
     font-weight: 600;
   }
+  /* Perfil seleccionado arriba a la izquierda */
+  #perfilSeleccionado {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: linear-gradient(145deg, #fdf6ff, #bb9edc);
+    border-radius: 16px;
+    padding: 6px 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #6a0dad;
+    text-align: center;
+    box-shadow:
+      0 8px 20px #7854ebaa,
+      inset 0 -3px 10px #a095d1a1,
+      inset 0 6px 8px #7b65c89a;
+    user-select: none;
+    max-width: 320px;
+    z-index: 101;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Botones de perfil */
   .perfil-filter {
     display: flex;
     justify-content: center;
@@ -161,26 +185,7 @@
     box-shadow: 0 10px 28px #6a0dadcc;
     transform: scale(1.15);
   }
-  #perfilSeleccionado {
-    position: absolute;
-    top: 140px;
-    right: 12px;
-    background: linear-gradient(145deg, #fdf6ff, #bb9edc);
-    border-radius: 16px;
-    padding: 8px 18px;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #6a0dad;
-    text-align: center;
-    box-shadow:
-      0 8px 20px #7854ebaa,
-      inset 0 -3px 10px #a095d1a1,
-      inset 0 6px 8px #7b65c89a;
-    user-select: none;
-    width: max-content;
-    max-width: 300px;
-    z-index: 101;
-  }
+  /* Buscador global */
   .filters {
     max-width: 1100px;
     margin: 0.8rem auto 2rem auto;
@@ -227,6 +232,7 @@
   #btnWebSearch:hover {
     background-color: #245ea7;
   }
+  /* Contenido principal */
   main {
     max-width: 1100px;
     margin: 0 auto 3rem;
@@ -299,6 +305,47 @@
     white-space: pre-line;
     padding-left: 1rem;
   }
+
+  /* Adaptación responsive */
+  @media(max-width: 900px) {
+    main {
+      flex-direction: column;
+      padding: 1rem;
+    }
+    .subtitulo-container, .accion-container {
+      max-width: 100%;
+      width: 100%;
+      min-width: auto;
+    }
+    #perfilSeleccionado {
+      position: relative;
+      top: auto; left: auto;
+      margin: 0 auto 1rem auto;
+      max-width: 100%;
+    }
+    #panelClima {
+      width: 120px;
+      bottom: 90px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 6px 8px;
+    }
+  }
+  @media(max-width: 500px) {
+    #selectorRegion {
+      font-size: 0.75rem;
+      padding: 5px 6px;
+    }
+    #horaActual {
+      font-size: 1rem;
+    }
+    #climaTemp {
+      font-size: 1rem;
+    }
+    #climaText {
+      font-size: 0.7rem;
+    }
+  }
 </style>
 </head>
 <body>
@@ -342,8 +389,9 @@
   </div>
 </div>
 
-<div class="perfil-filter" id="perfilFilter" aria-label="Filtros por perfiles"></div>
 <div id="perfilSeleccionado" aria-live="polite">Seleccione un perfil</div>
+
+<div class="perfil-filter" id="perfilFilter" aria-label="Filtros por perfiles"></div>
 
 <div class="filters">
   <input type="search" id="searchInput" placeholder="Filtrar toda la guía..." aria-label="Filtro global de búsqueda" />
@@ -382,87 +430,76 @@
     }, 1000);
   }
 
-  function actualizarPanelClima(region) {
+  function actualizarPanelClima(region){
     const climaIcon = document.getElementById("climaIcon");
     const climaTemp = document.getElementById("climaTemp");
     const climaText = document.getElementById("climaText");
 
-    if (!region) {
+    if(!region){
       climaIcon.innerHTML = "";
       climaTemp.textContent = "-- °C";
       climaText.textContent = "Elija una región para ver el clima";
       return;
     }
     const estados = [
-      { icon: "☀️", temp: 23, texto: "Soleado" },
-      { icon: "⛅", temp: 18, texto: "Parcialmente nublado" },
-      { icon: "🌧️", temp: 14, texto: "Lluvia ligera" },
-      { icon: "🌫️", temp: 12, texto: "Niebla" },
-      { icon: "☁️", temp: 15, texto: "Nublado" }
+      {icon:"☀️", temp:23, texto:"Soleado"},
+      {icon:"⛅", temp:18, texto:"Parcialmente nublado"},
+      {icon:"🌧️", temp:14, texto:"Lluvia ligera"},
+      {icon:"🌫️", temp:12, texto:"Niebla"},
+      {icon:"☁️", temp:15, texto:"Nublado"}
     ];
-    const estado = estados[Math.floor(Math.random() * estados.length)];
-    climaIcon.innerHTML = `<img src="${climaGifs[estado.icon]}" alt="${estado.texto}" />`;
+    const estado = estados[Math.floor(Math.random()*estados.length)];
+    climaIcon.innerHTML = `<img src="${climaGifs[estado.icon]}" alt="${estado.texto}">`;
     climaTemp.textContent = `${estado.temp} °C`;
     climaText.textContent = `${region}: ${estado.texto}`;
   }
 
-  document.addEventListener("DOMContentLoaded", () => {
+  document.addEventListener("DOMContentLoaded", ()=>{
     actualizarHora();
 
     const pasos = [
-      { perfil: "ADMINISTRATIVO", subtitulo: "ANALISIS DE ADMISIBILIDAD", accion: "VER + / REGULAR / BUSCAR RUT / VER +", inicial: "A" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "ADMISIBILIDAD DE LA SOLICITUD", accion: "ACEPTAR / CONFIRMAR", inicial: "A" },
-      { perfil: "MÉDICO PRESIDENTE", subtitulo: "ASIGNAR MEDICO", accion: "REGULAR / BUSCAR RUT", inicial: "M" },
-      { perfil: "MÉDICO PRESIDENTE", subtitulo: "ACCIONES", accion: "AUTOASIGNAR Y/O MODIFICAR", inicial: "M" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "INICIO / CITACIONES", accion: "VER + / REGULAR / BUSCAR RUT / ACCIONES / REAGENDAR 1 O 2 SOLICITUDES (DEPENDE EL CASO)", inicial: "A" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "GESTIONAR CITACION / PREVISUALIZAR CARTA", accion: "CONFIRMAR CITA", inicial: "A" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "NOMINA DE CORREO", accion: "MARCAR SOLICITUDES / ASIGNAR NÓMINA / CREAR / NÓMINA / EN GESTION / SE PINCHA LA 1ERA / REVISAR NOMINA / DESCARGAR DOCUMENTO NÓMINA", inicial: "A" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "GUIA DE DESPACHO DE CORREOS", accion: "EDITAR No DE NÓMINA", inicial: "A" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "DOCUMENTO GUIA DE DESPACHO", accion: "CAMBIAR FECHA (HOY) / ADJUNTAR NÓMINA / GUARDAR", inicial: "A" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "INICIO", accion: "CONFIRMAR ASISTENCIA A EVALUACIONES PRESENCIAL / TELEFONICA / BUSCAR C/ RUT / ACCIONES / SOBRECUPO / CAMBIAR HORA / CONFIRMAR / SI (X 2)", inicial: "A" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "MIS EXPEDIENTES", accion: "EVALUACIÓN MÉDICA", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "PENDIENTE DE INICIO / EN EVALUACION", accion: "BUSCAR RUT / IR AL EXPEDIENTE / DESEA REALIZAR EVALUACION MEDICA? / COMENZAR", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "ANAMNESIS", accion: "COMPLETAR / GUARDAR", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "EXAMEN FÍSICO", accion: "COMPLETAR / GUARDAR", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "PLAN DE ACCIÓN", accion: "ACCIÓN A SEGUIR / PERITAJES Y/O EXAMENES", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "NUEVA SOLICITUD", accion: "", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "SOLICITAR INTERCONSULTAS", accion: "ESPECIALIDADES (…..) SELECCIONAR", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "SOLICITAR EXAMENES", accion: "EXAMENES DE LABORATORIO / FILTRAR / CONFIRMAR", inicial: "M" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "ORDENES DE ATENCIÓN POR GESTIONAR", accion: "VER + / REGULAR / BUSCAR RUT", inicial: "A" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "GESTIONAR ORDEN", accion: "SELECCIONAR COMISION / PROPUESTA DE SISTEMA N° 1 / LABORATORIO VERIS", inicial: "A" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "INTERCONSULTA SOLICITADA", accion: "COMPLETAR / ACCIONES / MODALIDAD DE ATENCION / CAMBIAR FECHA / HORA / SELECCIONAR INTERCONSULTOR (POR DEFECTO) / AGENDAR / CONFIRMAR / EMITIR ORDENES", inicial: "A" },
-      { perfil: "MÉDICO INTERCONSULTOR", subtitulo: "ÓRDENES EMITIDAS", accion: "FILTRAR CON RUT / SELECCIONAR / CONFIRMAR / CONFIRMAR C/RUT/ INDICAR HORA / ACEPTAR", inicial: "M" },
-      { perfil: "MÉDICO INTERCONSULTOR", subtitulo: "ORDENES CONFIRMADAS", accion: "SELECCIONAR / REALIZAR EVALUACIÓN / ADJUNTAR INFORME FINAL / ENVÍAR A REVISIÓN", inicial: "M" },
-      { perfil: "LABORATORIO", subtitulo: "ÓRDENES EMITIDAS", accion: "FILTRAR CON RUT / SELECCIONAR / CONFIRMAR / CONFIRMAR C/RUT/ INDICAR HORA / ACEPTAR", inicial: "L" },
-      { perfil: "LABORATORIO", subtitulo: "ÓRDENES CONFIRMADAS", accion: "SELECCIONAR / REALIZAR EVALUACIÓN", inicial: "L" },
-      { perfil: "LABORATORIO", subtitulo: "DOCUMENTOS DE PRESTACIONES", accion: "ADJUNTAR / ACEPTAR / ENVÍAR A REVISIÓN / ACEPTAR", inicial: "L" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "ÓRDENES DE ATENCIÓN", accion: "ORDENES DE ATENCIÓN TRABAJADAS", inicial: "A" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "EN VERIFICACIÓN DE RECEPCIÓN", accion: "ACCIONES /VALIDAR PARA COBRO / ACEPTAR", inicial: "A" },
-      { perfil: "MÉDICO INTERCONSULTOR", subtitulo: "ORDENES VALIDADAS PARA COBRO", accion: "FILTRAR C/ RUT / SELECCIONAR / COBRAR / MISMOS PASOS CON PERFIL DE LABORATORIO", inicial: "M" },
-      { perfil: "MÉDICO ASESOR", subtitulo: "MI TRABAJO", accion: "EVALUACIÓN MEDICA / PENDIENTE INICIO / EN EVALUACIÓN / FILTRAR C/RUT / IR AL EXPEDIENTE", inicial: "M" },
-      { perfil: "MÉDICO ASESOR", subtitulo: "GESTIÓN DEL EXPEDIENTE", accion: "DESEA REALIZAR ENTREVISTA MEDICA? / COMENZAR / ENTREVISTA CON MEDICO ASESOR / REALIZAR LA ENTREVISTATELEFONICA? / SI / COMENZAR / COMPLETAR IMPEDIMENTOS / AGREGAR / COMPLETAR TRATAMIENTO / AGREGAR", inicial: "M" },
-      { perfil: "MÉDICO ASESOR", subtitulo: "SOLICITUD INFUNDADA", accion: "SI, SI, SI , A LAS PREGUNTAS. / FINALIZAR / GENERAR PDF", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "MI TRABAJO", accion: "MIS EXPEDIENTES / REGULAR / BUSCAR RUT / VER +", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "EVALUACIÓN MÉDICA", accion: "PLAN DE ACCIÓN / CERRAR CASO", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "CONFIGURACION DE IMPEDIMENTO", accion: "COMPLETAR CLASE Y RANGO / PREGUNTA (NO) / COMPLETAR CIE 10 / INVALIDEZ PREVIA (NO) / GUARDAR / ENVÍAR A REVISION PREVIA SESION", inicial: "M" },
-      { perfil: "MÉDICO PRESIDENTE", subtitulo: "DERIVAR EXPEDIENTES A SESIÓN", accion: "ENVIAR A SESIÓN", inicial: "M" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "SESIONES NUEVO", accion: "CREAR TABLA / CAMBIAR FECHA / HORA (AHORA)", inicial: "A" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "EXPEDIENTE DE CALIFICACIÓN", accion: "REGULAR / FILTRAR C/RUT / MARCAR EXPEDIENTE \"CREAR TABLA\" / GESTIONAR / CREAR TABLA DE SESIÓN / GESTIONAR / VER DETALLES / GENERAR DOCUMENTO / DESCARGAR / (ANOTAR Y/O RECORDAR No DE TABLA) / ACTIALIZAR RESULTADO / DESCARGAR", inicial: "A" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "SESIONES NUEVO", accion: "BUSCAR N° DE TABLA / GESTIONAR / VER DETALLES / CONFIRMAR ASISTENCIA / CONFIRMAR CAMBIOS", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "INICIAR SESIÓN", accion: "COMENZAR", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "EXPEDIENTES POR SESIONAR", accion: "ACCIONES / SESIONAR / INICIAR", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "PLAN DE ACCION", accion: "REGISTRAR DICTAMEN X 2 / ACCION A SEGUIR / DICTAMINAR / SOLICITUD DE ASESORIA ADICIONAL (NO) / CONFIRMAR DICTAMEN / CONFIRMAR", inicial: "M" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "VOLVER A TABLA DE SESION", accion: "PREVISUALIZAR ACTA DE SESION / CONFIRMAR ACTA / REFRESCAR PÁGINA / DESCARGAR DOCUMENTO DE ACTA DE SESIÓN / VOLVER / FINALIZAR SESIÓN / CONFIRMAR", inicial: "M" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "INICIO / REVISION DE GLOSAS", accion: "BUSCAR RUT / VERIFICAR GLOSA / VER + / PREVISUALIZAR DOCUMENTO / DESCARGAR / CONFIRMAR REGISTRO", inicial: "A" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "INICIO / FIRMA DE DOCUMENTOS", accion: "ACTA SESION / BUSCAR N° DE SESION / FIRMAR DOCUMENTO (CLAVE Pr01)", inicial: "M" },
-      { perfil: "MÉDICO PRESIDENTE", subtitulo: "INICIO / FIRMA DE DOCUMENTOS", accion: "ACTA SESION / BUSCAR X N° DE SESION / FIRMAR DOCUMENTO (CLAVE Pr01)", inicial: "M" },
-      { perfil: "MÉDICO ASESOR", subtitulo: "INICIO / FIRMA DE DOCUMENTOS", accion: "ACTA SESION / BUSCAR X N° DE SESION / FIRMAR DOCUMENTO (CLAVE Pr01)", inicial: "M" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "FIRMA DE DOCUMENTOS", accion: "VER + / DICTAMEN / BUSCAR No DE SESION / NOTIFICAR", inicial: "A" },
-      { perfil: "MÉDICO DESIGNADO", subtitulo: "DICTAMEN", accion: "BUSCAR No DE SEION / FIRMAR DOCUMENTO", inicial: "M" },
-      { perfil: "MÉDICO PRESIDENTE", subtitulo: "DICTAMEN", accion: "BUSCAR No DE SEION / FIRMAR DOCUMENTO", inicial: "M" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "NÓMINA DE CORREO", accion: "DICTAMENES MARCAR RUT / ASIGNAR NÓMINA / CREAR / DESCARGAR DOCUMENTO NÓMINA / GUIA DE DESPACHO DE CORREO VA N°DE NOMINA / DOCUMENTOS GUIA DE DESPACHO / COMPLETAR FECHA / ADJUNTAR DOCTO / GUARDAR", inicial: "A" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "MONITOREAR", accion: "ETAPA 9", inicial: "A" }
-      // Continúa agregando si hay más datos
+      {perfil:"ADMINISTRATIVO", subtitulo:"ANALISIS DE ADMISIBILIDAD", accion:"VER + / REGULAR / BUSCAR RUT / VER +", inicial:"A"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"ADMISIBILIDAD DE LA SOLICITUD", accion:"ACEPTAR / CONFIRMAR", inicial:"A"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"INICIO / CITACIONES", accion:"VER + / REGULAR / BUSCAR RUT / ACCIONES / REAGENDAR 1 O 2 SOLICITUDES (DEPENDE EL CASO)", inicial:"A"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"GESTIONAR CITACION / PREVISUALIZAR CARTA", accion:"CONFIRMAR CITA", inicial:"A"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"NOMINA DE CORREO", accion:"MARCAR SOLICITUDES / ASIGNAR NÓMINA / CREAR / NÓMINA / EN GESTION / SE PINCHA LA 1ERA / REVISAR NOMINA / DESCARGAR DOCUMENTO NÓMINA", inicial:"A"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"GUIA DE DESPACHO DE CORREOS", accion:"EDITAR No DE NÓMINA", inicial:"A"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"DOCUMENTO GUIA DE DESPACHO", accion:"CAMBIAR FECHA (HOY) / ADJUNTAR NÓMINA / GUARDAR", inicial:"A"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"INICIO", accion:"CONFIRMAR ASISTENCIA A EVALUACIONES PRESENCIAL / TELEFONICA / BUSCAR C/ RUT / ACCIONES / SOBRECUPO / CAMBIAR HORA / CONFIRMAR / SI (X 2)", inicial:"A"},
+      {perfil:"MÉDICO PRESIDENTE", subtitulo:"ASIGNAR MEDICO", accion:"REGULAR / BUSCAR RUT", inicial:"M"},
+      {perfil:"MÉDICO PRESIDENTE", subtitulo:"ACCIONES", accion:"AUTOASIGNAR Y/O MODIFICAR", inicial:"M"},
+      {perfil:"MÉDICO PRESIDENTE", subtitulo:"MARCAR MÉDICO / CONFIRMAR MÉDICO", accion:"", inicial:"M"},
+      {perfil:"MÉDICO ASIGNADO", subtitulo:"MIS EXPEDIENTES", accion:"EVALUACIÓN MÉDICA", inicial:"M"},
+      {perfil:"MÉDICO ASIGNADO", subtitulo:"PENDIENTE DE INICIO / EN EVALUACION", accion:"BUSCAR RUT / IR AL EXPEDIENTE / DESEA REALIZAR EVALUACION MEDICA? / COMENZAR", inicial:"M"},
+      {perfil:"MÉDICO ASIGNADO", subtitulo:"ANAMNESIS", accion:"COMPLETAR / GUARDAR", inicial:"M"},
+      {perfil:"MÉDICO ASIGNADO", subtitulo:"EXAMEN FÍSICO", accion:"COMPLETAR / GUARDAR", inicial:"M"},
+      {perfil:"MÉDICO ASIGNADO", subtitulo:"PLAN DE ACCIÓN", accion:"ACCIÓN A SEGUIR / PERITAJES Y/O EXAMENES", inicial:"M"},
+      {perfil:"MÉDICO ASIGNADO", subtitulo:"NUEVA SOLICITUD", accion:"", inicial:"M"},
+      {perfil:"MÉDICO ASIGNADO", subtitulo:"SOLICITAR INTERCONSULTAS", accion:"ESPECIALIDADES (…..) SELECCIONAR", inicial:"M"},
+      {perfil:"MÉDICO ASIGNADO", subtitulo:"SOLICITAR EXAMENES", accion:"EXAMENES DE LABORATORIO / FILTRAR / CONFIRMAR", inicial:"M"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"ORDENES DE ATENCIÓN POR GESTIONAR", accion:"VER + / REGULAR / BUSCAR RUT", inicial:"A"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"GESTIONAR ORDEN", accion:"SELECCIONAR COMISION / PROPUESTA DE SISTEMA N° 1 / LABORATORIO VERIS", inicial:"A"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"INTERCONSULTA SOLICITADA", accion:"COMPLETAR / ACCIONES / MODALIDAD DE ATENCION / CAMBIAR FECHA / HORA / SELECCIONAR INTERCONSULTOR (POR DEFECTO) / AGENDAR / CONFIRMAR / EMITIR ORDENES", inicial:"A"},
+      {perfil:"MÉDICO INTERCONSULTOR", subtitulo:"ÓRDENES EMITIDAS", accion:"FILTRAR CON RUT / SELECCIONAR / CONFIRMAR / CONFIRMAR C/RUT/ INDICAR HORA / ACEPTAR", inicial:"M"},
+      {perfil:"MÉDICO INTERCONSULTOR", subtitulo:"ORDENES CONFIRMADAS", accion:"SELECCIONAR / REALIZAR EVALUACIÓN / ADJUNTAR INFORME FINAL / ENVÍAR A REVISIÓN", inicial:"M"},
+      {perfil:"LABORATORIO", subtitulo:"ÓRDENES EMITIDAS", accion:"FILTRAR CON RUT / SELECCIONAR / CONFIRMAR / CONFIRMAR C/RUT/ INDICAR HORA / ACEPTAR", inicial:"L"},
+      {perfil:"LABORATORIO", subtitulo:"ÓRDENES CONFIRMADAS", accion:"SELECCIONAR / REALIZAR EVALUACIÓN", inicial:"L"},
+      {perfil:"LABORATORIO", subtitulo:"DOCUMENTOS DE PRESTACIONES", accion:"ADJUNTAR / ACEPTAR / ENVÍAR A REVISIÓN / ACEPTAR", inicial:"L"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"ÓRDENES DE ATENCIÓN", accion:"ORDENES DE ATENCIÓN TRABAJADAS", inicial:"A"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"EN VERIFICACIÓN DE RECEPCIÓN", accion:"ACCIONES /VALIDAR PARA COBRO / ACEPTAR", inicial:"A"},
+      {perfil:"MÉDICO INTERCONSULTOR", subtitulo:"ORDENES VALIDADAS PARA COBRO", accion:"FILTRAR C/ RUT / SELECCIONAR / COBRAR / MISMOS PASOS CON PERFIL DE LABORATORIO", inicial:"M"},
+      {perfil:"MÉDICO ASESOR", subtitulo:"MI TRABAJO", accion:"EVALUACIÓN MEDICA / PENDIENTE INICIO / EN EVALUACIÓN / FILTRAR C/RUT / IR AL EXPEDIENTE", inicial:"M"},
+      {perfil:"MÉDICO ASESOR", subtitulo:"GESTIÓN DEL EXPEDIENTE", accion:"DESEA REALIZAR ENTREVISTA MEDICA? / COMENZAR / ENTREVISTA CON MEDICO ASESOR / REALIZAR LA ENTREVISTATELEFONICA? / SI / COMENZAR / COMPLETAR IMPEDIMENTOS / AGREGAR / COMPLETAR TRATAMIENTO / AGREGAR", inicial:"M"},
+      {perfil:"MÉDICO ASESOR", subtitulo:"SOLICITUD INFUNDADA", accion:"SI, SI, SI , A LAS PREGUNTAS. / FINALIZAR / GENERAR PDF", inicial:"M"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"INICIO / REVISION DE GLOSAS", accion:"BUSCAR RUT / VERIFICAR GLOSA / VER + / PREVISUALIZAR DOCUMENTO / DESCARGAR / CONFIRMAR REGISTRO", inicial:"A"},
+      {perfil:"MÉDICO ASIGNADO", subtitulo:"INICIO / FIRMA DE DOCUMENTOS", accion:"ACTA SESION / BUSCAR N° DE SESION / FIRMAR DOCUMENTO (CLAVE Pr01)", inicial:"M"},
+      {perfil:"MÉDICO PRESIDENTE", subtitulo:"INICIO / FIRMA DE DOCUMENTOS", accion:"ACTA SESION / BUSCAR X N° DE SESION / FIRMAR DOCUMENTO (CLAVE Pr01)", inicial:"M"},
+      {perfil:"MÉDICO ASESOR", subtitulo:"INICIO / FIRMA DE DOCUMENTOS", accion:"ACTA SESION / BUSCAR X N° DE SESION / FIRMAR DOCUMENTO (CLAVE Pr01)", inicial:"M"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"FIRMA DE DOCUMENTOS", accion:"VER + / DICTAMEN / BUSCAR No DE SESION / NOTIFICAR", inicial:"A"},
+      {perfil:"MÉDICO DESIGNADO", subtitulo:"DICTAMEN", accion:"BUSCAR No DE SEION / FIRMAR DOCUMENTO", inicial:"M"},
+      {perfil:"MÉDICO PRESIDENTE", subtitulo:"DICTAMEN", accion:"BUSCAR No DE SEION / FIRMAR DOCUMENTO", inicial:"M"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"NÓMINA DE CORREO", accion:"DICTAMENES MARCAR RUT / ASIGNAR NÓMINA / CREAR / DESCARGAR DOCUMENTO NÓMINA / GUIA DE DESPACHO DE CORREO VA N°DE NOMINA / DOCUMENTOS GUIA DE DESPACHO / COMPLETAR FECHA / ADJUNTAR DOCTO / GUARDAR", inicial:"A"},
+      {perfil:"ADMINISTRATIVO", subtitulo:"MONITOREAR", accion:"ETAPA 9", inicial:"A"}
     ];
 
     let perfilActivo = null;
@@ -548,6 +585,7 @@
       );
     }
 
+    // Filtro global
     const searchInput = document.getElementById("searchInput");
     const btnReset = document.getElementById("btnReset");
     searchInput.addEventListener("input", () => {
