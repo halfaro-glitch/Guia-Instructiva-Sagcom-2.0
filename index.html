@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Guía SAGCOM 2 - Completo</title>
 <style>
-  /* Estilos generales y para clima 3D */
   body::before {
     content: "";
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -349,7 +348,7 @@
 <div class="filters">
   <input type="search" id="searchInput" placeholder="Filtrar toda la guía..." aria-label="Filtro global de búsqueda" />
   <button id="btnReset" title="Borrar filtros">Borrar filtros</button>
-  <button id="btnWebSearch" title="Buscar en sitio web oficial">Buscar en spensiones.cl</button>
+  <button id="btnWebSearch" title="Buscar en sitio oficial">Buscar en spensiones.cl</button>
 </div>
 
 <main>
@@ -415,17 +414,55 @@
       { perfil: "ADMINISTRATIVO", subtitulo: "ADMISIBILIDAD DE LA SOLICITUD", accion: "ACEPTAR / CONFIRMAR", inicial: "A" },
       { perfil: "MÉDICO PRESIDENTE", subtitulo: "ASIGNAR MEDICO", accion: "REGULAR / BUSCAR RUT", inicial: "M" },
       { perfil: "MÉDICO PRESIDENTE", subtitulo: "ACCIONES", accion: "AUTOASIGNAR Y/O MODIFICAR", inicial: "M" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "INICIO / CITACIONES", accion: "VER + / REGULAR / BUSCAR RUT", inicial: "A" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "CONFIRMAR CITA", accion: "CONFIRMAR CITA", inicial: "A" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "INICIO / CITACIONES", accion: "VER + / REGULAR / BUSCAR RUT / ACCIONES / REAGENDAR 1 O 2 SOLICITUDES (DEPENDE EL CASO)", inicial: "A" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "GESTIONAR CITACION / PREVISUALIZAR CARTA", accion: "CONFIRMAR CITA", inicial: "A" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "NOMINA DE CORREO", accion: "MARCAR SOLICITUDES / ASIGNAR NÓMINA / CREAR / NÓMINA / EN GESTION / SE PINCHA LA 1ERA / REVISAR NOMINA / DESCARGAR DOCUMENTO NÓMINA", inicial: "A" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "GUIA DE DESPACHO DE CORREOS", accion: "EDITAR No DE NÓMINA", inicial: "A" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "DOCUMENTO GUIA DE DESPACHO", accion: "CAMBIAR FECHA (HOY) / ADJUNTAR NÓMINA / GUARDAR", inicial: "A" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "INICIO", accion: "CONFIRMAR ASISTENCIA A EVALUACIONES PRESENCIAL / TELEFONICA / BUSCAR C/ RUT / ACCIONES / SOBRECUPO / CAMBIAR HORA / CONFIRMAR / SI (X 2)", inicial: "A" },
       { perfil: "MÉDICO ASIGNADO", subtitulo: "MIS EXPEDIENTES", accion: "EVALUACIÓN MÉDICA", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "PENDIENTE DE INICIO / EN EVALUACION", accion: "BUSCAR RUT / IR AL EXPEDIENTE / DESEA REALIZAR EVALUACION MEDICA? / COMENZAR", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "ANAMNESIS", accion: "COMPLETAR / GUARDAR", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "EXAMEN FÍSICO", accion: "COMPLETAR / GUARDAR", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "PLAN DE ACCIÓN", accion: "ACCIÓN A SEGUIR / PERITAJES Y/O EXAMENES", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "NUEVA SOLICITUD", accion: "", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "SOLICITAR INTERCONSULTAS", accion: "ESPECIALIDADES (…..) SELECCIONAR", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "SOLICITAR EXAMENES", accion: "EXAMENES DE LABORATORIO / FILTRAR / CONFIRMAR", inicial: "M" },
       { perfil: "ADMINISTRATIVO", subtitulo: "ORDENES DE ATENCIÓN POR GESTIONAR", accion: "VER + / REGULAR / BUSCAR RUT", inicial: "A" },
-      { perfil: "MÉDICO INTERCONSULTOR", subtitulo: "ÓRDENES EMITIDAS", accion: "FILTRAR CON RUT / SELECCIONAR, CONFIRMAR", inicial: "M" },
-      { perfil: "LABORATORIO", subtitulo: "DOCUMENTOS DE PRESTACIONES", accion: "ADJUNTAR / ACEPTAR / ENVIAR A REVISIÓN", inicial: "L" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "GESTIONAR ORDEN", accion: "SELECCIONAR COMISION / PROPUESTA DE SISTEMA N° 1 / LABORATORIO VERIS", inicial: "A" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "INTERCONSULTA SOLICITADA", accion: "COMPLETAR / ACCIONES / MODALIDAD DE ATENCION / CAMBIAR FECHA / HORA / SELECCIONAR INTERCONSULTOR (POR DEFECTO) / AGENDAR / CONFIRMAR / EMITIR ORDENES", inicial: "A" },
+      { perfil: "MÉDICO INTERCONSULTOR", subtitulo: "ÓRDENES EMITIDAS", accion: "FILTRAR CON RUT / SELECCIONAR / CONFIRMAR / CONFIRMAR C/RUT/ INDICAR HORA / ACEPTAR", inicial: "M" },
+      { perfil: "MÉDICO INTERCONSULTOR", subtitulo: "ORDENES CONFIRMADAS", accion: "SELECCIONAR / REALIZAR EVALUACIÓN / ADJUNTAR INFORME FINAL / ENVÍAR A REVISIÓN", inicial: "M" },
+      { perfil: "LABORATORIO", subtitulo: "ÓRDENES EMITIDAS", accion: "FILTRAR CON RUT / SELECCIONAR / CONFIRMAR / CONFIRMAR C/RUT/ INDICAR HORA / ACEPTAR", inicial: "L" },
+      { perfil: "LABORATORIO", subtitulo: "ÓRDENES CONFIRMADAS", accion: "SELECCIONAR / REALIZAR EVALUACIÓN", inicial: "L" },
+      { perfil: "LABORATORIO", subtitulo: "DOCUMENTOS DE PRESTACIONES", accion: "ADJUNTAR / ACEPTAR / ENVÍAR A REVISIÓN / ACEPTAR", inicial: "L" },
       { perfil: "ADMINISTRATIVO", subtitulo: "ÓRDENES DE ATENCIÓN", accion: "ORDENES DE ATENCIÓN TRABAJADAS", inicial: "A" },
-      { perfil: "MÉDICO ASESOR", subtitulo: "MI TRABAJO", accion: "EVALUACIÓN MEDICA", inicial: "M" },
-      { perfil: "MÉDICO ASESO", subtitulo: "INICIO / FIRMA DE DOCUMENTOS", accion: "ACTA SESION / BUSCAR X N° DE SESION / FIRMAR DOCUMENTO (CLAVE Pr01)", inicial: "M" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "EN VERIFICACIÓN DE RECEPCIÓN", accion: "ACCIONES /VALIDAR PARA COBRO / ACEPTAR", inicial: "A" },
+      { perfil: "MÉDICO INTERCONSULTOR", subtitulo: "ORDENES VALIDADAS PARA COBRO", accion: "FILTRAR C/ RUT / SELECCIONAR / COBRAR / MISMOS PASOS CON PERFIL DE LABORATORIO", inicial: "M" },
+      { perfil: "MÉDICO ASESOR", subtitulo: "MI TRABAJO", accion: "EVALUACIÓN MEDICA / PENDIENTE INICIO / EN EVALUACIÓN / FILTRAR C/RUT / IR AL EXPEDIENTE", inicial: "M" },
+      { perfil: "MÉDICO ASESOR", subtitulo: "GESTIÓN DEL EXPEDIENTE", accion: "DESEA REALIZAR ENTREVISTA MEDICA? / COMENZAR / ENTREVISTA CON MEDICO ASESOR / REALIZAR LA ENTREVISTATELEFONICA? / SI / COMENZAR / COMPLETAR IMPEDIMENTOS / AGREGAR / COMPLETAR TRATAMIENTO / AGREGAR", inicial: "M" },
+      { perfil: "MÉDICO ASESOR", subtitulo: "SOLICITUD INFUNDADA", accion: "SI, SI, SI , A LAS PREGUNTAS. / FINALIZAR / GENERAR PDF", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "MI TRABAJO", accion: "MIS EXPEDIENTES / REGULAR / BUSCAR RUT / VER +", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "EVALUACIÓN MÉDICA", accion: "PLAN DE ACCIÓN / CERRAR CASO", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "CONFIGURACION DE IMPEDIMENTO", accion: "COMPLETAR CLASE Y RANGO / PREGUNTA (NO) / COMPLETAR CIE 10 / INVALIDEZ PREVIA (NO) / GUARDAR / ENVÍAR A REVISION PREVIA SESION", inicial: "M" },
+      { perfil: "MÉDICO PRESIDENTE", subtitulo: "DERIVAR EXPEDIENTES A SESIÓN", accion: "ENVIAR A SESIÓN", inicial: "M" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "SESIONES NUEVO", accion: "CREAR TABLA / CAMBIAR FECHA / HORA (AHORA)", inicial: "A" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "EXPEDIENTE DE CALIFICACIÓN", accion: "REGULAR / FILTRAR C/RUT / MARCAR EXPEDIENTE \"CREAR TABLA\" / GESTIONAR / CREAR TABLA DE SESIÓN / GESTIONAR / VER DETALLES / GENERAR DOCUMENTO / DESCARGAR / (ANOTAR Y/O RECORDAR No DE TABLA) / ACTIALIZAR RESULTADO / DESCARGAR", inicial: "A" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "SESIONES NUEVO", accion: "BUSCAR N° DE TABLA / GESTIONAR / VER DETALLES / CONFIRMAR ASISTENCIA / CONFIRMAR CAMBIOS", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "INICIAR SESIÓN", accion: "COMENZAR", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "EXPEDIENTES POR SESIONAR", accion: "ACCIONES / SESIONAR / INICIAR", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "PLAN DE ACCION", accion: "REGISTRAR DICTAMEN X 2 / ACCION A SEGUIR / DICTAMINAR / SOLICITUD DE ASESORIA ADICIONAL (NO) / CONFIRMAR DICTAMEN / CONFIRMAR", inicial: "M" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "VOLVER A TABLA DE SESION", accion: "PREVISUALIZAR ACTA DE SESION / CONFIRMAR ACTA / REFRESCAR PÁGINA / DESCARGAR DOCUMENTO DE ACTA DE SESIÓN / VOLVER / FINALIZAR SESIÓN / CONFIRMAR", inicial: "M" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "INICIO / REVISION DE GLOSAS", accion: "BUSCAR RUT / VERIFICAR GLOSA / VER + / PREVISUALIZAR DOCUMENTO / DESCARGAR / CONFIRMAR REGISTRO", inicial: "A" },
+      { perfil: "MÉDICO ASIGNADO", subtitulo: "INICIO / FIRMA DE DOCUMENTOS", accion: "ACTA SESION / BUSCAR N° DE SESION / FIRMAR DOCUMENTO (CLAVE Pr01)", inicial: "M" },
+      { perfil: "MÉDICO PRESIDENTE", subtitulo: "INICIO / FIRMA DE DOCUMENTOS", accion: "ACTA SESION / BUSCAR X N° DE SESION / FIRMAR DOCUMENTO (CLAVE Pr01)", inicial: "M" },
+      { perfil: "MÉDICO ASESOR", subtitulo: "INICIO / FIRMA DE DOCUMENTOS", accion: "ACTA SESION / BUSCAR X N° DE SESION / FIRMAR DOCUMENTO (CLAVE Pr01)", inicial: "M" },
       { perfil: "ADMINISTRATIVO", subtitulo: "FIRMA DE DOCUMENTOS", accion: "VER + / DICTAMEN / BUSCAR No DE SESION / NOTIFICAR", inicial: "A" },
-      // Agrega todos los demás elementos que tienes en tu lista siguiendo el formato
+      { perfil: "MÉDICO DESIGNADO", subtitulo: "DICTAMEN", accion: "BUSCAR No DE SEION / FIRMAR DOCUMENTO", inicial: "M" },
+      { perfil: "MÉDICO PRESIDENTE", subtitulo: "DICTAMEN", accion: "BUSCAR No DE SEION / FIRMAR DOCUMENTO", inicial: "M" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "NÓMINA DE CORREO", accion: "DICTAMENES MARCAR RUT / ASIGNAR NÓMINA / CREAR / DESCARGAR DOCUMENTO NÓMINA / GUIA DE DESPACHO DE CORREO VA N°DE NOMINA / DOCUMENTOS GUIA DE DESPACHO / COMPLETAR FECHA / ADJUNTAR DOCTO / GUARDAR", inicial: "A" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "MONITOREAR", accion: "ETAPA 9", inicial: "A" }
+      // Continúa agregando si hay más datos
     ];
 
     let perfilActivo = null;
