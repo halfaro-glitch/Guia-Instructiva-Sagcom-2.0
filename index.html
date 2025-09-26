@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>Guía SAGCOM 2 - Clima, Segmentos y Filtro Global</title>
 <style>
+  /* Estilos base y de fondo */
   body::before {
     content: "";
     position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -52,7 +53,6 @@
     font-size: 1.1rem;
     user-select: none;
   }
-  /* Panel clima pequeño y en 3D */
   #panelClima {
     position: fixed;
     bottom: 8%;
@@ -131,8 +131,6 @@
     color: #6a0dad;
     font-weight: 600;
   }
-
-  /* Perfiles y filtros */
   .perfil-filter {
     display: flex;
     justify-content: center;
@@ -229,8 +227,6 @@
   #btnWebSearch:hover {
     background-color: #245ea7; 
   }
-
-  /* Main container */
   main {
     max-width: 1100px;
     margin: 0 auto 3rem;
@@ -367,67 +363,67 @@
 </main>
 
 <script>
-  // Mapeo emoticones a gif animados para clima
+  // Mapeo GIFs de clima para cada icono
   const climaGifs = {
-    "☀️":"https://i.gifer.com/origin/7b/7b207eea12a182c6274714f2b988c424_w200.gif",
-    "⛅":"https://i.gifer.com/origin/4b/4b6c9071a0a78b043301e989f0d3685d_w200.gif",
-    "🌧️":"https://i.gifer.com/origin/6d/6d9fa8ddf6bbc735df3ee5985d84ec7c_w200.gif",
-    "🌫️":"https://i.gifer.com/origin/ea/ea5cadb8b1ccafdca645fe3406486b35_w200.gif",
-    "☁️":"https://i.gifer.com/origin/9d/9d8d90edf8189830911e98764e78114a_w200.gif"
+    "☀️": "https://i.gifer.com/origin/7b/7b207eea12a182c6274714f2b988c424_w200.gif",
+    "⛅": "https://i.gifer.com/origin/4b/4b6c9071a0a78b043301e989f0d3685d_w200.gif",
+    "🌧️": "https://i.gifer.com/origin/6d/6d9fa8ddf6bbc735df3ee5985d84ec7c_w200.gif",
+    "🌫️": "https://i.gifer.com/origin/ea/ea5cadb8b1ccafdca645fe3406486b35_w200.gif",
+    "☁️": "https://i.gifer.com/origin/9d/9d8d90edf8189830911e98764e78114a_w200.gif"
   };
 
   function actualizarHora() {
     const divHora = document.getElementById("horaActual");
     setInterval(() => {
       const ahora = new Date();
-      const h = String(ahora.getHours()).padStart(2,"0");
-      const m = String(ahora.getMinutes()).padStart(2,"0");
-      const s = String(ahora.getSeconds()).padStart(2,"0");
+      const h = String(ahora.getHours()).padStart(2, "0");
+      const m = String(ahora.getMinutes()).padStart(2, "0");
+      const s = String(ahora.getSeconds()).padStart(2, "0");
       divHora.textContent = `${h}:${m}:${s}`;
     }, 1000);
   }
 
-  function actualizarPanelClima(region){
+  function actualizarPanelClima(region) {
     const climaIcon = document.getElementById("climaIcon");
     const climaTemp = document.getElementById("climaTemp");
     const climaText = document.getElementById("climaText");
 
-    if(!region){
+    if (!region) {
       climaIcon.innerHTML = "";
       climaTemp.textContent = "-- °C";
       climaText.textContent = "Elija una región para ver el clima";
       return;
     }
     const estados = [
-      {icon:"☀️", temp:23, texto:"Soleado"},
-      {icon:"⛅", temp:18, texto:"Parcialmente nublado"},
-      {icon:"🌧️", temp:14, texto:"Lluvia ligera"},
-      {icon:"🌫️", temp:12, texto:"Niebla"},
-      {icon:"☁️", temp:15, texto:"Nublado"}
+      { icon: "☀️", temp: 23, texto: "Soleado" },
+      { icon: "⛅", temp: 18, texto: "Parcialmente nublado" },
+      { icon: "🌧️", temp: 14, texto: "Lluvia ligera" },
+      { icon: "🌫️", temp: 12, texto: "Niebla" },
+      { icon: "☁️", temp: 15, texto: "Nublado" }
     ];
-    // Para la región elegida asigno el clima de forma aleatoria (puedes hacerlo estático o via API después)
-    const estado = estados[Math.floor(Math.random()*estados.length)];
-    // Mostrar el gif
+    // Asigna clima aleatorio por ahora
+    const estado = estados[Math.floor(Math.random() * estados.length)];
     climaIcon.innerHTML = `<img src="${climaGifs[estado.icon]}" alt="${estado.texto}" />`;
     climaTemp.textContent = `${estado.temp} °C`;
     climaText.textContent = `${region}: ${estado.texto}`;
   }
 
-  document.addEventListener("DOMContentLoaded",()=>{
+  document.addEventListener("DOMContentLoaded", () => {
     actualizarHora();
 
+    // Datos parciales para ejemplo. Debes agregar todos los perfiles/tareas/procesos reales aquí.
     const pasos = [
       { perfil: "ADMINISTRATIVO", subtitulo: "ANALISIS DE ADMISIBILIDAD", accion: "VER + / REGULAR / BUSCAR RUT / VER +", inicial: "A" },
       { perfil: "ADMINISTRATIVO", subtitulo: "ADMISIBILIDAD DE LA SOLICITUD", accion: "ACEPTAR / CONFIRMAR", inicial: "A" },
       { perfil: "MÉDICO PRESIDENTE", subtitulo: "ASIGNAR MEDICO", accion: "REGULAR / BUSCAR RUT", inicial: "M" },
       { perfil: "MÉDICO PRESIDENTE", subtitulo: "ACCIONES", accion: "AUTOASIGNAR Y/O MODIFICAR", inicial: "M" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "INICIO / CITACIONES", accion:"VER + / REGULAR / BUSCAR RUT", inicial: "A" },
-      { perfil: "MÉDICO ASIGNADO", subtitulo: "MIS EXPEDIENTES", accion: "EVALUACIÓN MÉDICA", inicial: "M" },
-      { perfil: "ADMINISTRATIVO", subtitulo: "ORDENES DE ATENCIÓN POR GESTIONAR", accion:"VER + /  REGULAR / BUSCAR RUT", inicial: "A" }
-      // Continuar agregando exactamente todas las tareas y acciones que tengas
+      { perfil: "MÉDICO ASESOR", subtitulo: "MI TRABAJO", accion: "EVALUACIÓN MEDICA", inicial: "M" },
+      { perfil: "MÉDICO INTERCONSULTOR", subtitulo: "ÓRDENES EMITIDAS", accion: "FILTRAR CON RUT / SELECCIONAR, CONFIRMAR", inicial: "M" },
+      { perfil: "LABORATORIO", subtitulo: "DOCUMENTOS DE PRESTACIONES", accion: "ADJUNTAR / ACEPTAR / ENVIAR A REVISIÓN", inicial: "L" },
+      { perfil: "ADMINISTRATIVO", subtitulo: "ORDENES DE ATENCIÓN POR GESTIONAR", accion: "VER + / REGULAR / BUSCAR RUT", inicial: "A" },
+      // Continúa agregando todos los demás desde tu listado real
     ];
 
-    // Variables
     let perfilActivo = null;
     let subtituloActivo = null;
 
@@ -502,7 +498,6 @@
       [...subtituloList.children].forEach(li => li.classList.remove("selected"));
     }
 
-    // Filtro global para subtítulos
     const searchInput = document.getElementById("searchInput");
     const btnReset = document.getElementById("btnReset");
     searchInput.addEventListener("input", () => {
@@ -530,7 +525,6 @@
         });
       limpiarSeleccion();
     });
-
     btnReset.addEventListener("click", () => {
       searchInput.value = "";
       limpiarSeleccion();
@@ -540,7 +534,6 @@
     const btnWebSearch = document.getElementById("btnWebSearch");
     btnWebSearch.addEventListener("click", () => {
       if (!perfilActivo) return;
-      // Enlace fijo a página oficial
       window.open("https://www.spensiones.cl/portal/compendio/596/w3-propertyvalue-3208.html", "_blank");
     });
 
