@@ -28,7 +28,7 @@
   }
   body {
     font-family: Arial, sans-serif;
-    margin: 0; padding: 0;
+    margin: 0; padding: 0 0 4rem 0;
     background-color: #fff;
     color: #222;
     position: relative;
@@ -138,12 +138,6 @@
     width: 42px;
     height: 42px;
   }
-  #climaTemp {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: #3a006f;
-    display:none; /* Oculto para quitar visual del tiempo */
-  }
   #climaText {
     font-size: 0.85rem;
     color: #6a0dad;
@@ -234,7 +228,7 @@
   }
   main {
     max-width: 1100px;
-    margin: 0 auto 3rem;
+    margin: 0 auto 4rem;
     background: #fff;
     border-radius: 16px;
     box-shadow: 0 2px 20px #3a006f2e;
@@ -306,57 +300,54 @@
   }
 
   /* Responsive adjustments */
-@media(max-width: 900px) {
-  main {
-    flex-direction: column;
-    padding: 1rem;
+  @media(max-width: 900px) {
+    main {
+      flex-direction: column;
+      padding: 1rem;
+    }
+    .subtitulo-container, .accion-container {
+      max-width: 100%;
+      width: 100%;
+      min-width: auto;
+    }
+    #perfilSeleccionado {
+      position: relative;
+      top: auto; left: auto;
+      margin: 0 auto 1rem auto;
+      max-width: 100%;
+      white-space: normal;
+    }
+    #panelClima {
+      position: relative;
+      top: auto; left: auto;
+      width: 140px;
+      margin: 0 auto 1rem auto;
+      transform: none !important;
+      box-shadow: 0 10px 15px rgba(0,0,0,0.2), 0 4px 6px rgba(0,0,0,0.15);
+      transition:none;
+    }
   }
-  .subtitulo-container, .accion-container {
-    max-width: 100%;
-    width: 100%;
-    min-width: auto;
+  @media(max-width: 500px) {
+    #selectorRegion {
+      font-size: 0.75rem;
+      padding: 5px 6px;
+    }
+    #climaText {
+      font-size: 0.7rem;
+    }
   }
-  #perfilSeleccionado {
-    position: relative;
-    top: auto; left: auto;
-    margin: 0 auto 1rem auto;
-    max-width: 100%;
-    white-space: normal;
-  }
-  #panelClima {
-    position: relative;
-    top: auto; left: auto;
-    width: 140px;
-    margin: 0 auto 1rem auto;
-    transform: none !important;
-    box-shadow: 0 10px 15px rgba(0,0,0,0.2), 0 4px 6px rgba(0,0,0,0.15);
-    transition:none;
-  }
-}
-@media(max-width: 500px) {
-  #selectorRegion {
-    font-size: 0.75rem;
-    padding: 5px 6px;
-  }
-  #climaTemp {
-    font-size: 1rem;
-  }
-  #climaText {
-    font-size: 0.7rem;
-  }
-}
 </style>
 </head>
 <body>
 <header>
   Guía de pasos para SAGCOM 2
-  <div class="autor-text" aria-label="Autor del documento">Creado por Héctor Alfaro M.</div>
+  <div class="autor-text" aria-label="Autor del documento">Creado por Héctor Alfaro y Javier Zuñiga.</div>
 </header>
 
 <div id="perfilSeleccionado" aria-live="polite" aria-atomic="true">Seleccione un perfil</div>
 
 <div id="panelClima" aria-label="Panel clima e información actual" aria-live="polite" aria-atomic="true">
-  <header>Clima y Hora</header>
+  <header>Clima</header>
   <select id="selectorRegion" aria-label="Seleccionar región de Chile para ver clima">
     <option value="" disabled selected>Seleccione región</option>
     <option value="Arica">Arica</option>
@@ -383,7 +374,6 @@
   <div id="climaInfo" role="region" style="margin-top:6px;">
     <div id="climaIcon" aria-label="Icono clima" role="img"></div>
     <div>
-      <div id="climaTemp"></div>
       <div id="climaText">Elija una región para ver el clima</div>
     </div>
   </div>
@@ -420,25 +410,22 @@
 
   function actualizarPanelClima(region){
     const climaIcon = document.getElementById("climaIcon");
-    const climaTemp = document.getElementById("climaTemp");
     const climaText = document.getElementById("climaText");
 
     if(!region){
       climaIcon.innerHTML = "";
-      climaTemp.textContent = "";
       climaText.textContent = "Elija una región para ver el clima";
       return;
     }
     const estados = [
-      {icon:"☀️", temp:"", texto:"Soleado"},
-      {icon:"⛅", temp:"", texto:"Parcialmente nublado"},
-      {icon:"🌧️", temp:"", texto:"Lluvia ligera"},
-      {icon:"🌫️", temp:"", texto:"Niebla"},
-      {icon:"☁️", temp:"", texto:"Nublado"}
+      {icon:"☀️", texto:"Soleado"},
+      {icon:"⛅", texto:"Parcialmente nublado"},
+      {icon:"🌧️", texto:"Lluvia ligera"},
+      {icon:"🌫️", texto:"Niebla"},
+      {icon:"☁️", texto:"Nublado"}
     ];
     const estado = estados[Math.floor(Math.random()*estados.length)];
-    climaIcon.innerHTML = `<img src="${climaGifs[estado.icon]}" alt="${estado.texto}">`;
-    climaTemp.textContent = "";
+    climaIcon.innerHTML = `<img src="${climaGifs[estado.icon]}" alt="${estado.texto}" />`;
     climaText.textContent = `${region}: ${estado.texto}`;
   }
 
@@ -616,10 +603,7 @@
     const btnWebSearch = document.getElementById("btnWebSearch");
     btnWebSearch.addEventListener("click", () => {
       if (!perfilActivo) return;
-      window.open(
-        "https://www.spensiones.cl/portal/compendio/596/w3-propertyvalue-3208.html",
-        "_blank"
-      );
+      window.open("https://www.spensiones.cl/portal/compendio/596/w3-propertyvalue-3208.html", "_blank");
     });
 
     const btnSagcom = document.getElementById("btnSagcom");
