@@ -55,16 +55,41 @@
     font-size: 1.1rem;
     user-select: none;
   }
-  /* Panel Clima reducido */
+  /* Perfil seleccionado arriba a la izquierda */
+  #perfilSeleccionado {
+    position: fixed;
+    top: 12px;
+    left: 12px;
+    background: linear-gradient(145deg, #fdf6ff, #bb9edc);
+    border-radius: 16px;
+    padding: 6px 14px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #6a0dad;
+    text-align: center;
+    box-shadow:
+      0 8px 20px #7854ebaa,
+      inset 0 -3px 10px #a095d1a1,
+      inset 0 6px 8px #7b65c89a;
+    user-select: none;
+    max-width: 320px;
+    z-index: 101;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* Panel Clima reducido justo abajo del perfil */
   #panelClima {
     position: fixed;
-    bottom: 6%;
+    top: 60px;
     left: 12px;
-    width: 120px;
+    width: 220px;
     background: rgba(255 255 255 / 0.95);
     border-radius: 20px;
-    padding: 6px 8px;
-    box-shadow: 0 6px 10px rgba(0,0,0,0.15);
+    padding: 8px 12px;
+    box-shadow:
+      0 10px 15px rgba(0,0,0,0.2),
+      0 4px 6px rgba(0,0,0,0.15);
     font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
     color: #3a006f;
     z-index: 100;
@@ -73,28 +98,30 @@
     transition: transform 0.3s ease;
   }
   #panelClima:hover {
-    transform: rotateY(10deg) rotateX(5deg) translateZ(15px);
-    box-shadow: 0 15px 20px rgba(0,0,0,0.25);
+    transform: rotateY(15deg) rotateX(5deg) translateZ(30px);
+    box-shadow:
+      0 20px 30px rgba(0,0,0,0.3),
+      0 10px 15px rgba(0,0,0,0.25);
   }
   #panelClima header {
     font-weight: 700;
-    font-size: 1rem;
-    margin-bottom: 4px;
+    font-size: 1.1rem;
+    margin-bottom: 6px;
     text-align: center;
     user-select: none;
   }
   #horaActual {
-    font-size: 1.1rem;
+    font-size: 1.3rem;
     font-weight: 900;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
     letter-spacing: 1px;
     text-align: center;
   }
   #selectorRegion {
     width: 100%;
-    margin-bottom: 8px;
-    padding: 4px 8px;
-    font-size: 0.85rem;
+    margin-bottom: 10px;
+    padding: 6px 10px;
+    font-size: 1rem;
     border-radius: 12px;
     border: 2px solid #6a0dad;
     background: #fafafa;
@@ -104,7 +131,7 @@
   }
   #selectorRegion:focus {
     outline: none;
-    box-shadow: 0 0 8px #6a0dadaa;
+    box-shadow: 0 0 10px #6a0dadaa;
   }
   #climaInfo {
     display: flex;
@@ -129,29 +156,6 @@
     font-size: 0.75rem;
     color: #6a0dad;
     font-weight: 600;
-  }
-  /* Perfil seleccionado arriba a la izquierda */
-  #perfilSeleccionado {
-    position: fixed;
-    top: 12px;
-    left: 12px;
-    background: linear-gradient(145deg, #fdf6ff, #bb9edc);
-    border-radius: 16px;
-    padding: 6px 14px;
-    font-size: 1rem;
-    font-weight: 700;
-    color: #6a0dad;
-    text-align: center;
-    box-shadow:
-      0 8px 20px #7854ebaa,
-      inset 0 -3px 10px #a095d1a1,
-      inset 0 6px 8px #7b65c89a;
-    user-select: none;
-    max-width: 320px;
-    z-index: 101;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
   }
   /* Botones de perfil */
   .perfil-filter {
@@ -305,8 +309,7 @@
     white-space: pre-line;
     padding-left: 1rem;
   }
-
-  /* Adaptación responsive */
+  /* Responsive ajustes */
   @media(max-width: 900px) {
     main {
       flex-direction: column;
@@ -324,11 +327,15 @@
       max-width: 100%;
     }
     #panelClima {
-      width: 120px;
-      bottom: 90px;
-      left: 50%;
-      transform: translateX(-50%);
-      padding: 6px 8px;
+      position: relative;
+      top: auto; left: auto;
+      width: 140px;
+      margin: 0 auto 1rem auto;
+      transform: none !important;
+      box-shadow:
+        0 10px 15px rgba(0,0,0,0.2),
+        0 4px 6px rgba(0,0,0,0.15);
+      transition:none;
     }
   }
   @media(max-width: 500px) {
@@ -353,6 +360,8 @@
   Guía de pasos para SAGCOM 2
   <div class="autor-text" aria-label="Autor del documento">Creado por Héctor Alfaro M.</div>
 </header>
+
+<div id="perfilSeleccionado" aria-live="polite">Seleccione un perfil</div>
 
 <div id="panelClima" aria-label="Panel clima e información actual">
   <header>Clima y Hora</header>
@@ -388,8 +397,6 @@
     </div>
   </div>
 </div>
-
-<div id="perfilSeleccionado" aria-live="polite">Seleccione un perfil</div>
 
 <div class="perfil-filter" id="perfilFilter" aria-label="Filtros por perfiles"></div>
 
@@ -585,7 +592,7 @@
       );
     }
 
-    // Filtro global
+    // Buscador global
     const searchInput = document.getElementById("searchInput");
     const btnReset = document.getElementById("btnReset");
     searchInput.addEventListener("input", () => {
