@@ -108,13 +108,6 @@
     text-align: center;
     user-select: none;
   }
-  #horaActual {
-    font-size: 1.3rem;
-    font-weight: 900;
-    margin-bottom: 8px;
-    letter-spacing: 1px;
-    text-align: center;
-  }
   #selectorRegion {
     width: 100%;
     margin-bottom: 10px;
@@ -149,6 +142,7 @@
     font-size: 1.2rem;
     font-weight: 700;
     color: #3a006f;
+    display:none; /* Oculto para quitar visual del tiempo */
   }
   #climaText {
     font-size: 0.85rem;
@@ -232,6 +226,12 @@
   #btnWebSearch:hover {
     background-color: #245ea7;
   }
+  #btnSagcom {
+    background-color: #228B22;
+  }
+  #btnSagcom:hover {
+    background-color: #176417;
+  }
   main {
     max-width: 1100px;
     margin: 0 auto 3rem;
@@ -304,48 +304,47 @@
     white-space: pre-line;
     padding-left: 1rem;
   }
-  @media(max-width: 900px) {
-    main {
-      flex-direction: column;
-      padding: 1rem;
-    }
-    .subtitulo-container, .accion-container {
-      max-width: 100%;
-      width: 100%;
-      min-width: auto;
-    }
-    #perfilSeleccionado {
-      position: relative;
-      top: auto; left: auto;
-      margin: 0 auto 1rem auto;
-      max-width: 100%;
-      white-space: normal;
-    }
-    #panelClima {
-      position: relative;
-      top: auto; left: auto;
-      width: 140px;
-      margin: 0 auto 1rem auto;
-      transform: none !important;
-      box-shadow: 0 10px 15px rgba(0,0,0,0.2), 0 4px 6px rgba(0,0,0,0.15);
-      transition:none;
-    }
+
+  /* Responsive adjustments */
+@media(max-width: 900px) {
+  main {
+    flex-direction: column;
+    padding: 1rem;
   }
-  @media(max-width: 500px) {
-    #selectorRegion {
-      font-size: 0.75rem;
-      padding: 5px 6px;
-    }
-    #horaActual {
-      font-size: 1rem;
-    }
-    #climaTemp {
-      font-size: 1rem;
-    }
-    #climaText {
-      font-size: 0.7rem;
-    }
+  .subtitulo-container, .accion-container {
+    max-width: 100%;
+    width: 100%;
+    min-width: auto;
   }
+  #perfilSeleccionado {
+    position: relative;
+    top: auto; left: auto;
+    margin: 0 auto 1rem auto;
+    max-width: 100%;
+    white-space: normal;
+  }
+  #panelClima {
+    position: relative;
+    top: auto; left: auto;
+    width: 140px;
+    margin: 0 auto 1rem auto;
+    transform: none !important;
+    box-shadow: 0 10px 15px rgba(0,0,0,0.2), 0 4px 6px rgba(0,0,0,0.15);
+    transition:none;
+  }
+}
+@media(max-width: 500px) {
+  #selectorRegion {
+    font-size: 0.75rem;
+    padding: 5px 6px;
+  }
+  #climaTemp {
+    font-size: 1rem;
+  }
+  #climaText {
+    font-size: 0.7rem;
+  }
+}
 </style>
 </head>
 <body>
@@ -358,7 +357,6 @@
 
 <div id="panelClima" aria-label="Panel clima e información actual" aria-live="polite" aria-atomic="true">
   <header>Clima y Hora</header>
-  <div id="horaActual">--:--:--</div>
   <select id="selectorRegion" aria-label="Seleccionar región de Chile para ver clima">
     <option value="" disabled selected>Seleccione región</option>
     <option value="Arica">Arica</option>
@@ -385,7 +383,7 @@
   <div id="climaInfo" role="region" style="margin-top:6px;">
     <div id="climaIcon" aria-label="Icono clima" role="img"></div>
     <div>
-      <div id="climaTemp">-- °C</div>
+      <div id="climaTemp"></div>
       <div id="climaText">Elija una región para ver el clima</div>
     </div>
   </div>
@@ -396,7 +394,8 @@
 <div class="filters">
   <input type="search" id="searchInput" placeholder="Filtrar toda la guía..." aria-label="Filtro global de búsqueda" />
   <button id="btnReset" title="Borrar filtros">Borrar filtros</button>
-  <button id="btnWebSearch" title="Buscar en sitio oficial">Buscar en spensiones.cl</button>
+  <button id="btnWebSearch" title="Buscar en pensiones.cl">Buscar en pensiones.cl</button>
+  <button id="btnSagcom" title="Ir al sitio SAGCOM">SAGCOM</button>
 </div>
 
 <main>
@@ -419,17 +418,6 @@
     "☁️": "https://cdn-icons-png.flaticon.com/512/414/414854.png"
   };
 
-  function actualizarHora() {
-    const divHora = document.getElementById("horaActual");
-    setInterval(() => {
-      const ahora = new Date();
-      const h = String(ahora.getHours()).padStart(2, "0");
-      const m = String(ahora.getMinutes()).padStart(2, "0");
-      const s = String(ahora.getSeconds()).padStart(2, "0");
-      divHora.textContent = `${h}:${m}:${s}`;
-    }, 1000);
-  }
-
   function actualizarPanelClima(region){
     const climaIcon = document.getElementById("climaIcon");
     const climaTemp = document.getElementById("climaTemp");
@@ -437,25 +425,25 @@
 
     if(!region){
       climaIcon.innerHTML = "";
-      climaTemp.textContent = "-- °C";
+      climaTemp.textContent = "";
       climaText.textContent = "Elija una región para ver el clima";
       return;
     }
     const estados = [
-      {icon:"☀️", temp:23, texto:"Soleado"},
-      {icon:"⛅", temp:18, texto:"Parcialmente nublado"},
-      {icon:"🌧️", temp:14, texto:"Lluvia ligera"},
-      {icon:"🌫️", temp:12, texto:"Niebla"},
-      {icon:"☁️", temp:15, texto:"Nublado"}
+      {icon:"☀️", temp:"", texto:"Soleado"},
+      {icon:"⛅", temp:"", texto:"Parcialmente nublado"},
+      {icon:"🌧️", temp:"", texto:"Lluvia ligera"},
+      {icon:"🌫️", temp:"", texto:"Niebla"},
+      {icon:"☁️", temp:"", texto:"Nublado"}
     ];
     const estado = estados[Math.floor(Math.random()*estados.length)];
-    climaIcon.innerHTML = `<img src="${climaGifs[estado.icon]}" alt="${estado.texto}" />`;
-    climaTemp.textContent = `${estado.temp} °C`;
+    climaIcon.innerHTML = `<img src="${climaGifs[estado.icon]}" alt="${estado.texto}">`;
+    climaTemp.textContent = "";
     climaText.textContent = `${region}: ${estado.texto}`;
   }
 
-  document.addEventListener("DOMContentLoaded",()=>{
-    actualizarHora();
+  document.addEventListener("DOMContentLoaded", ()=>{
+    actualizarPanelClima();
 
     const pasos = [
       {perfil:"ADMINISTRATIVO", subtitulo:"ANALISIS DE ADMISIBILIDAD", accion:"VER + / REGULAR / BUSCAR RUT / VER +", inicial:"A"},
@@ -632,6 +620,11 @@
         "https://www.spensiones.cl/portal/compendio/596/w3-propertyvalue-3208.html",
         "_blank"
       );
+    });
+
+    const btnSagcom = document.getElementById("btnSagcom");
+    btnSagcom.addEventListener("click", () => {
+      window.open("https://www.sagcom.cl/acceso?from=/monitoreo", "_blank");
     });
 
     cargarFiltros();
