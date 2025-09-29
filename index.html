@@ -55,7 +55,6 @@
     font-size: 1.1rem;
     user-select: none;
   }
-  /* Perfil seleccionado arriba a la izquierda */
   #perfilSeleccionado {
     position: fixed;
     top: 12px;
@@ -78,7 +77,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  /* Panel Clima reducido justo abajo del perfil */
   #panelClima {
     position: fixed;
     top: 60px;
@@ -140,24 +138,23 @@
     gap: 6px;
   }
   #climaIcon {
-    width: 32px;
-    height: 32px;
+    width: 42px;
+    height: 42px;
   }
   #climaIcon img {
-    width: 32px;
-    height: 32px;
+    width: 42px;
+    height: 42px;
   }
   #climaTemp {
-    font-size: 1rem;
+    font-size: 1.2rem;
     font-weight: 700;
     color: #3a006f;
   }
   #climaText {
-    font-size: 0.75rem;
+    font-size: 0.85rem;
     color: #6a0dad;
     font-weight: 600;
   }
-  /* Botones de perfil */
   .perfil-filter {
     display: flex;
     justify-content: center;
@@ -189,7 +186,6 @@
     box-shadow: 0 10px 28px #6a0dadcc;
     transform: scale(1.15);
   }
-  /* Buscador global */
   .filters {
     max-width: 1100px;
     margin: 0.8rem auto 2rem auto;
@@ -236,7 +232,6 @@
   #btnWebSearch:hover {
     background-color: #245ea7;
   }
-  /* Contenido principal */
   main {
     max-width: 1100px;
     margin: 0 auto 3rem;
@@ -309,7 +304,6 @@
     white-space: pre-line;
     padding-left: 1rem;
   }
-  /* Responsive ajustes */
   @media(max-width: 900px) {
     main {
       flex-direction: column;
@@ -325,6 +319,7 @@
       top: auto; left: auto;
       margin: 0 auto 1rem auto;
       max-width: 100%;
+      white-space: normal;
     }
     #panelClima {
       position: relative;
@@ -332,9 +327,7 @@
       width: 140px;
       margin: 0 auto 1rem auto;
       transform: none !important;
-      box-shadow:
-        0 10px 15px rgba(0,0,0,0.2),
-        0 4px 6px rgba(0,0,0,0.15);
+      box-shadow: 0 10px 15px rgba(0,0,0,0.2), 0 4px 6px rgba(0,0,0,0.15);
       transition:none;
     }
   }
@@ -361,11 +354,11 @@
   <div class="autor-text" aria-label="Autor del documento">Creado por Héctor Alfaro M.</div>
 </header>
 
-<div id="perfilSeleccionado" aria-live="polite">Seleccione un perfil</div>
+<div id="perfilSeleccionado" aria-live="polite" aria-atomic="true">Seleccione un perfil</div>
 
-<div id="panelClima" aria-label="Panel clima e información actual">
+<div id="panelClima" aria-label="Panel clima e información actual" aria-live="polite" aria-atomic="true">
   <header>Clima y Hora</header>
-  <div id="horaActual" aria-live="polite" aria-atomic="true">--:--:--</div>
+  <div id="horaActual">--:--:--</div>
   <select id="selectorRegion" aria-label="Seleccionar región de Chile para ver clima">
     <option value="" disabled selected>Seleccione región</option>
     <option value="Arica">Arica</option>
@@ -389,7 +382,7 @@
     <option value="Coyhaique">Coyhaique</option>
     <option value="Punta Arenas">Punta Arenas</option>
   </select>
-  <div id="climaInfo" aria-live="polite" role="region" style="margin-top:6px;">
+  <div id="climaInfo" role="region" style="margin-top:6px;">
     <div id="climaIcon" aria-label="Icono clima" role="img"></div>
     <div>
       <div id="climaTemp">-- °C</div>
@@ -413,17 +406,17 @@
   </div>
   <div class="accion-container" aria-label="Acción a realizar para subtitulo">
     <h3>Acción a realizar</h3>
-    <div class="accion-text" id="accionDisplay" tabindex="0" aria-live="polite"></div>
+    <div class="accion-text" id="accionDisplay" tabindex="0"></div>
   </div>
 </main>
 
 <script>
   const climaGifs = {
-    "☀️": "https://i.gifer.com/origin/7b/7b207eea12a182c6274714f2b988c424_w200.gif",
-    "⛅": "https://i.gifer.com/origin/4b/4b6c9071a0a78b043301e989f0d3685d_w200.gif",
-    "🌧️": "https://i.gifer.com/origin/6d/6d9fa8ddf6bbc735df3ee5985d84ec7c_w200.gif",
-    "🌫️": "https://i.gifer.com/origin/ea/ea5cadb8b1ccafdca645fe3406486b35_w200.gif",
-    "☁️": "https://i.gifer.com/origin/9d/9d8d90edf8189830911e98764e78114a_w200.gif"
+    "☀️": "https://cdn-icons-png.flaticon.com/512/6974/6974830.png",
+    "⛅": "https://cdn-icons-png.flaticon.com/512/414/414825.png",
+    "🌧️": "https://cdn-icons-png.flaticon.com/512/3076/3076125.png",
+    "🌫️": "https://cdn-icons-png.flaticon.com/512/1197/1197102.png",
+    "☁️": "https://cdn-icons-png.flaticon.com/512/414/414854.png"
   };
 
   function actualizarHora() {
@@ -456,12 +449,12 @@
       {icon:"☁️", temp:15, texto:"Nublado"}
     ];
     const estado = estados[Math.floor(Math.random()*estados.length)];
-    climaIcon.innerHTML = `<img src="${climaGifs[estado.icon]}" alt="${estado.texto}">`;
+    climaIcon.innerHTML = `<img src="${climaGifs[estado.icon]}" alt="${estado.texto}" />`;
     climaTemp.textContent = `${estado.temp} °C`;
     climaText.textContent = `${region}: ${estado.texto}`;
   }
 
-  document.addEventListener("DOMContentLoaded", ()=>{
+  document.addEventListener("DOMContentLoaded",()=>{
     actualizarHora();
 
     const pasos = [
@@ -592,7 +585,6 @@
       );
     }
 
-    // Buscador global
     const searchInput = document.getElementById("searchInput");
     const btnReset = document.getElementById("btnReset");
     searchInput.addEventListener("input", () => {
