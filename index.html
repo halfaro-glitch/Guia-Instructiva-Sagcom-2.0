@@ -77,72 +77,6 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  #panelClima {
-    position: fixed;
-    top: 60px;
-    left: 12px;
-    width: 220px;
-    background: rgba(255 255 255 / 0.95);
-    border-radius: 20px;
-    padding: 8px 12px;
-    box-shadow:
-      0 10px 15px rgba(0,0,0,0.2),
-      0 4px 6px rgba(0,0,0,0.15);
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    color: #3a006f;
-    z-index: 100;
-    transform-style: preserve-3d;
-    perspective: 1000px;
-    transition: transform 0.3s ease;
-  }
-  #panelClima:hover {
-    transform: rotateY(15deg) rotateX(5deg) translateZ(30px);
-    box-shadow:
-      0 20px 30px rgba(0,0,0,0.3),
-      0 10px 15px rgba(0,0,0,0.25);
-  }
-  #panelClima header {
-    font-weight: 700;
-    font-size: 1.1rem;
-    margin-bottom: 6px;
-    text-align: center;
-    user-select: none;
-  }
-  #selectorRegion {
-    width: 100%;
-    margin-bottom: 10px;
-    padding: 6px 10px;
-    font-size: 1rem;
-    border-radius: 12px;
-    border: 2px solid #6a0dad;
-    background: #fafafa;
-    color: #3a006f;
-    cursor: pointer;
-    transition: box-shadow 0.3s ease;
-  }
-  #selectorRegion:focus {
-    outline: none;
-    box-shadow: 0 0 10px #6a0dadaa;
-  }
-  #climaInfo {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-  #climaIcon {
-    width: 42px;
-    height: 42px;
-  }
-  #climaIcon img {
-    width: 42px;
-    height: 42px;
-  }
-  #climaText {
-    font-size: 0.85rem;
-    color: #6a0dad;
-    font-weight: 600;
-  }
   .perfil-filter {
     display: flex;
     justify-content: center;
@@ -317,24 +251,6 @@
       max-width: 100%;
       white-space: normal;
     }
-    #panelClima {
-      position: relative;
-      top: auto; left: auto;
-      width: 140px;
-      margin: 0 auto 1rem auto;
-      transform: none !important;
-      box-shadow: 0 10px 15px rgba(0,0,0,0.2), 0 4px 6px rgba(0,0,0,0.15);
-      transition:none;
-    }
-  }
-  @media(max-width: 500px) {
-    #selectorRegion {
-      font-size: 0.75rem;
-      padding: 5px 6px;
-    }
-    #climaText {
-      font-size: 0.7rem;
-    }
   }
 </style>
 </head>
@@ -345,39 +261,6 @@
 </header>
 
 <div id="perfilSeleccionado" aria-live="polite" aria-atomic="true">Seleccione un perfil</div>
-
-<div id="panelClima" aria-label="Panel clima e información actual" aria-live="polite" aria-atomic="true">
-  <header>Clima</header>
-  <select id="selectorRegion" aria-label="Seleccionar región de Chile para ver clima">
-    <option value="" disabled selected>Seleccione región</option>
-    <option value="Arica">Arica</option>
-    <option value="Iquique">Iquique</option>
-    <option value="Antofagasta">Antofagasta</option>
-    <option value="Copiapo">Copiapó</option>
-    <option value="La Serena">La Serena</option>
-    <option value="Los Andes">Los Andes</option>
-    <option value="Viña del Mar">Viña del Mar</option>
-    <option value="Casa Matriz">Casa Matriz (Santiago)</option>
-    <option value="Rancagua">Rancagua</option>
-    <option value="Talca">Talca</option>
-    <option value="Chillan">Chillán</option>
-    <option value="Concepcion">Concepción</option>
-    <option value="Lo Angeles">Lo Angeles</option>
-    <option value="Temuco">Temuco</option>
-    <option value="Valdivia">Valdivia</option>
-    <option value="Osorno">Osorno</option>
-    <option value="Puerto Montt">Puerto Montt</option>
-    <option value="Chiloe">Chiloé</option>
-    <option value="Coyhaique">Coyhaique</option>
-    <option value="Punta Arenas">Punta Arenas</option>
-  </select>
-  <div id="climaInfo" role="region" style="margin-top:6px;">
-    <div id="climaIcon" aria-label="Icono clima" role="img"></div>
-    <div>
-      <div id="climaText">Elija una región para ver el clima</div>
-    </div>
-  </div>
-</div>
 
 <div class="perfil-filter" id="perfilFilter" aria-label="Filtros por perfiles"></div>
 
@@ -400,38 +283,7 @@
 </main>
 
 <script>
-  const climaGifs = {
-    "☀️": "https://cdn-icons-png.flaticon.com/512/6974/6974830.png",
-    "⛅": "https://cdn-icons-png.flaticon.com/512/414/414825.png",
-    "🌧️": "https://cdn-icons-png.flaticon.com/512/3076/3076125.png",
-    "🌫️": "https://cdn-icons-png.flaticon.com/512/1197/1197102.png",
-    "☁️": "https://cdn-icons-png.flaticon.com/512/414/414854.png"
-  };
-
-  function actualizarPanelClima(region){
-    const climaIcon = document.getElementById("climaIcon");
-    const climaText = document.getElementById("climaText");
-
-    if(!region){
-      climaIcon.innerHTML = "";
-      climaText.textContent = "Elija una región para ver el clima";
-      return;
-    }
-    const estados = [
-      {icon:"☀️", texto:"Soleado"},
-      {icon:"⛅", texto:"Parcialmente nublado"},
-      {icon:"🌧️", texto:"Lluvia ligera"},
-      {icon:"🌫️", texto:"Niebla"},
-      {icon:"☁️", texto:"Nublado"}
-    ];
-    const estado = estados[Math.floor(Math.random()*estados.length)];
-    climaIcon.innerHTML = `<img src="${climaGifs[estado.icon]}" alt="${estado.texto}" />`;
-    climaText.textContent = `${region}: ${estado.texto}`;
-  }
-
   document.addEventListener("DOMContentLoaded", ()=>{
-    actualizarPanelClima();
-
     const pasos = [
       {perfil:"ADMINISTRATIVO", subtitulo:"ANALISIS DE ADMISIBILIDAD", accion:"VER + / REGULAR / BUSCAR RUT / VER +", inicial:"A"},
       {perfil:"ADMINISTRATIVO", subtitulo:"ADMISIBILIDAD DE LA SOLICITUD", accion:"ACEPTAR / CONFIRMAR", inicial:"A"},
