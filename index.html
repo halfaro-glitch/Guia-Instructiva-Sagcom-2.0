@@ -321,7 +321,7 @@
   </div>
 </main>
 
-<!-- Modal para zoom de imagen -->
+<!-- Modal zoom -->
 <div id="imgModal" class="modal" aria-hidden="true" role="dialog" aria-label="Imagen ampliada">
   <span class="modal-close" id="modalClose" role="button" tabindex="0" aria-label="Cerrar imagen ampliada">&times;</span>
   <img class="modal-content" id="modalImage" alt="Imagen ampliada paso a paso">
@@ -469,7 +469,6 @@
       const texto = subtituloActivo.accion.replace(/\n/g,"<br/>");
       accionDisplay.innerHTML = `<div>${texto}</div>`;
 
-      // Mostrar imagenes si existen para subtitulo
       if(imagenesPorSubtitulo[subtituloActivo.subtitulo]){
         imagenesPorSubtitulo[subtituloActivo.subtitulo].forEach(url=>{
           const img = document.createElement("img");
@@ -477,7 +476,6 @@
           img.alt = "Flujo paso a paso";
           img.classList.add("accion-image");
           img.tabIndex = 0;
-          // al click, abrir modal imagen ampliada
           img.addEventListener("click", ()=>abrirModal(url));
           img.addEventListener("keypress", e => {
             if(e.key==="Enter" || e.key===" ") abrirModal(url);
@@ -547,7 +545,6 @@
       window.open("https://www.sagcom.cl/acceso?from=/monitoreo", "_blank");
     });
 
-    // Modal funciones y evento
     const modal = document.getElementById("imgModal");
     const modalImg = document.getElementById("modalImage");
     const modalClose = document.getElementById("modalClose");
