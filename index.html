@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<title>Guía SAGCOM 2 - Completo con Imágenes</title>
+<title>Guía SAGCOM 2 - Completo con Imágenes y Zoom</title>
 <style>
   body::before {
     content: "";
@@ -235,8 +235,45 @@
     margin-top: 12px;
     border-radius: 12px;
     box-shadow: 0 3px 8px rgb(106 13 173 / 0.7);
+    cursor:pointer;
+    transition: transform 0.3s ease;
   }
-  @media(max-width: 900px) {
+  .accion-image:hover {
+    transform: scale(1.03);
+  }
+  /* Modal zoom */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 105;
+    padding-top: 60px;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+    user-select:none;
+  }
+  .modal-content {
+    margin: auto;
+    display: block;
+    max-width: 90%;
+    max-height: 80%;
+    border-radius: 12px;
+  }
+  .modal-close {
+    position: fixed;
+    top: 20px;
+    right: 40px;
+    color: white;
+    font-size: 36px;
+    font-weight: bold;
+    cursor:pointer;
+    user-select:none;
+  }
+  .modal-close:hover {
+    color: #bbb;
+  }
+  @media(max-width:900px){
     main {
       flex-direction: column;
       padding: 1rem;
@@ -283,6 +320,12 @@
     <div class="accion-text" id="accionDisplay" tabindex="0"></div>
   </div>
 </main>
+
+<!-- Modal para zoom de imagen -->
+<div id="imgModal" class="modal" aria-hidden="true" role="dialog" aria-label="Imagen ampliada">
+  <span class="modal-close" id="modalClose" role="button" tabindex="0" aria-label="Cerrar imagen ampliada">&times;</span>
+  <img class="modal-content" id="modalImage" alt="Imagen ampliada paso a paso">
+</div>
 
 <script>
   document.addEventListener("DOMContentLoaded", ()=>{
@@ -433,6 +476,12 @@
           img.src = url;
           img.alt = "Flujo paso a paso";
           img.classList.add("accion-image");
+          img.tabIndex = 0;
+          // al click, abrir modal imagen ampliada
+          img.addEventListener("click", ()=>abrirModal(url));
+          img.addEventListener("keypress", e => {
+            if(e.key==="Enter" || e.key===" ") abrirModal(url);
+          });
           accionDisplay.appendChild(img);
         });
       }
@@ -496,6 +545,33 @@
     const btnSagcom = document.getElementById("btnSagcom");
     btnSagcom.addEventListener("click", () => {
       window.open("https://www.sagcom.cl/acceso?from=/monitoreo", "_blank");
+    });
+
+    // Modal funciones y evento
+    const modal = document.getElementById("imgModal");
+    const modalImg = document.getElementById("modalImage");
+    const modalClose = document.getElementById("modalClose");
+
+    function abrirModal(src){
+      modal.style.display = "block";
+      modal.setAttribute("aria-hidden", "false");
+      modalImg.src = src;
+      modalImg.alt = "Imagen ampliada paso a paso";
+      modalClose.focus();
+    }
+
+    function cerrarModal(){
+      modal.style.display = "none";
+      modal.setAttribute("aria-hidden", "true");
+      modalImg.src = "";
+    }
+
+    modalClose.addEventListener("click", cerrarModal);
+    modalClose.addEventListener("keypress", e=>{
+      if(e.key==="Enter"|| e.key===" ") cerrarModal();
+    });
+    modal.addEventListener("click", e=>{
+      if(e.target===modal) cerrarModal();
     });
 
     cargarFiltros();
