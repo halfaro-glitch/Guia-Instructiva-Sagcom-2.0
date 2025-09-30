@@ -3,12 +3,13 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-<title>Guía SAGCOM 2 - Completo</title>
+<title>Guía SAGCOM 2 - Completo con Imágenes</title>
 <style>
+  /* Mismo estilo que antes, omito para abreviar, mantén el CSS del ejemplo anterior tal cual */
+  /* ... */
   body::before {
     content: "";
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    position: fixed; top:0; left:0; right:0; bottom:0;
     background: url('https://raw.githubusercontent.com/halfaro-glitch/Guia-Instructiva-Sagcom-2.0/refs/heads/main/imagen.avif') no-repeat center center fixed;
     background-size: contain;
     filter: brightness(0.95);
@@ -16,34 +17,32 @@
   }
   body::after {
     content: "";
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
+    position: fixed; top:0; left:0; right:0; bottom:0;
     background: linear-gradient(135deg,
-      rgba(255,255,255,0.15) 10%,
-      rgba(255,255,255,0.45) 30%,
-      rgba(255,255,255,0.15) 70%,
-      rgba(255,255,255,0.05) 90%);
-    pointer-events: none;
-    z-index: -2;
+    rgba(255,255,255,0.15) 10%,
+    rgba(255,255,255,0.45) 30%,
+    rgba(255,255,255,0.15) 70%,
+    rgba(255,255,255,0.05) 90%);
+    pointer-events:none;
+    z-index:-2;
   }
   body {
-    font-family: Arial, sans-serif;
+    font-family: Arial,sans-serif;
     margin: 0; padding: 0 0 4rem 0;
-    background-color: #fff;
+    background: #fff;
     color: #222;
     position: relative;
-    z-index: 0;
   }
   header {
     background: linear-gradient(145deg, #3a006f 0%, #6a0dad 60%, #fff 100%);
-    color: white;
+    color: #fff;
     font-weight: bold;
-    font-size: 2rem;
-    text-align: center;
+    font-size:2rem;
+    text-align:center;
     padding: 2rem 1rem 3rem 1rem;
-    position: relative;
     letter-spacing: 1px;
     text-shadow: 3px 3px 8px #00000088;
+    position: relative;
   }
   header .autor-text {
     position: absolute;
@@ -53,7 +52,7 @@
     font-family: Georgia, serif;
     font-weight: 700;
     font-size: 1.1rem;
-    user-select: none;
+    user-select:none;
   }
   #perfilSeleccionado {
     position: fixed;
@@ -66,11 +65,10 @@
     font-weight: 700;
     color: #6a0dad;
     text-align: center;
-    box-shadow:
-      0 8px 20px #7854ebaa,
-      inset 0 -3px 10px #a095d1a1,
-      inset 0 6px 8px #7b65c89a;
-    user-select: none;
+    box-shadow: 0 8px 20px #7854ebaa,
+    inset 0 -3px 10px #a095d1a1,
+    inset 0 6px 8px #7b65c89a;
+    user-select:none;
     max-width: 320px;
     z-index: 101;
     white-space: nowrap;
@@ -78,12 +76,12 @@
     text-overflow: ellipsis;
   }
   .perfil-filter {
-    display: flex;
+    display:flex;
     justify-content: center;
-    gap: 1rem;
+    gap:1rem;
     flex-wrap: wrap;
     margin: 1.5rem auto 1rem;
-    max-width: 1100px;
+    max-width:1100px;
   }
   .perfil-btn {
     background: linear-gradient(145deg, #6a0dad 0%, #3a006f 90%);
@@ -93,7 +91,7 @@
     font-weight: 700;
     color: white;
     border: none;
-    cursor: pointer;
+    cursor:pointer;
     box-shadow: 0 4px 16px #3a006f77;
     transition: transform 0.28s ease, box-shadow 0.28s ease, background-color 0.3s ease;
     text-shadow: 1px 1px 8px #000000cc;
@@ -118,11 +116,11 @@
     align-items: center;
   }
   .filters input[type=search] {
-    border: 2px solid #6a0dad;
+    border:2px solid #6a0dad;
     border-radius: 10px;
     padding: 0.45rem 1.25rem;
     font-size: 1rem;
-    outline: none;
+    outline:none;
     box-shadow: 0 1px 7px #3a006f21;
     transition: 0.3s box-shadow ease;
     min-width: 350px;
@@ -137,8 +135,8 @@
     border-radius: 12px;
     border: none;
     font-size: 1rem;
-    cursor: pointer;
-    color: white;
+    cursor:pointer;
+    color:white;
     box-shadow: 0 3px 20px #3a006fcc;
     transition: 0.3s background-color ease;
   }
@@ -229,10 +227,17 @@
     margin-bottom: 12px;
   }
   .accion-text {
-    white-space: pre-line;
+    white-space: pre-wrap;
     padding-left: 1rem;
   }
-
+  .accion-image {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin-top: 12px;
+    border-radius: 12px;
+    box-shadow: 0 3px 8px rgb(106 13 173 / 0.7);
+  }
   /* Responsive adjustments */
   @media(max-width: 900px) {
     main {
@@ -329,6 +334,18 @@
       {perfil:"ADMINISTRATIVO", subtitulo:"MONITOREAR", accion:"ETAPA 9", inicial:"A"}
     ];
 
+    const imagenesPorSubtitulo = {
+      "ANALISIS DE ADMISIBILIDAD": [
+        "https://i.postimg.cc/3Nk2C9XT/paso1.png",
+        "https://i.postimg.cc/hGXPhHc3/paso2.png",
+        "https://i.postimg.cc/jd8ttWhv/paso3.png"
+      ],
+      "ADMISIBILIDAD DE LA SOLICITUD": [
+        "https://i.postimg.cc/9Brhvx3r/paso1b.png",
+        "https://i.postimg.cc/fTyH90Fw/paso2b.png"
+      ]
+    };
+
     let perfilActivo = null;
     let subtituloActivo = null;
 
@@ -400,7 +417,21 @@
     }
 
     function mostrarAccion() {
-      accionDisplay.textContent = subtituloActivo ? subtituloActivo.accion : "";
+      accionDisplay.innerHTML = "";
+      if (!subtituloActivo) return;
+      const texto = subtituloActivo.accion.replace(/\n/g,"<br/>");
+      accionDisplay.innerHTML = `<div>${texto}</div>`;
+
+      // Mostrar imagenes si existen para subtitulo
+      if(imagenesPorSubtitulo[subtituloActivo.subtitulo]){
+        imagenesPorSubtitulo[subtituloActivo.subtitulo].forEach(url=>{
+          const img = document.createElement("img");
+          img.src = url;
+          img.alt = "Flujo paso a paso";
+          img.classList.add("accion-image");
+          accionDisplay.appendChild(img);
+        });
+      }
       accionDisplay.focus();
     }
 
